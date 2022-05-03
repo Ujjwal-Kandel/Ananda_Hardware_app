@@ -6,15 +6,15 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-// import {
-//   ApplicationProvider,
-//   IconRegistry,
-//   BottomNavigation,
-//   BottomNavigationTab,
-// } from '@ui-kitten/components';
-// import {EvaIconsPack} from '@ui-kitten/eva-icons';
-// import * as eva from '@eva-design/eva';
-// import Icon from 'react-native-vector-icons/FontAwesome';
+import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import * as eva from '@eva-design/eva';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  ApplicationProvider,
+  BottomNavigation,
+  BottomNavigationTab,
+  IconRegistry,
+} from '@ui-kitten/components';
 
 // import {Provider} from 'react-redux';
 
@@ -64,58 +64,75 @@ const TabNavigator = () => {
         inactiveTintColor: 'black',
         headerRight: () => (
           <View style={{paddingRight: 15}}>
-            <Cart />
+            {/* <Cart /> */}
+            <Text>cart</Text>
           </View>
         ),
       }}
       tabBar={props => <BottomTabBar {...props} />}
-      initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}>
-      <Tab.Screen name="Home" component={home} />
-      <Tab.Screen name="Scan" component={qr} />
+      // initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}
+    >
+      <Tab.Screen name="Home" component={Test} />
+      {/* <Tab.Screen name="Scan" component={qr} />
       <Tab.Screen name="Browse Companies" component={browse} />
-      <Tab.Screen name="Settings" component={sync} />
+      <Tab.Screen name="Settings" component={sync} /> */}
     </Tab.Navigator>
   );
 };
 
 const Stack = createNativeStackNavigator();
 
+const Test = () => (
+  <View>
+    <Text>test</Text>
+  </View>
+);
+
 export default function App() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-      <Provider store={store}>
-        <ApplicationProvider {...eva} theme={eva.light}>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              <Stack.Navigator
-                initialRouteName="tabs"
-                screenOptions={{
-                  headerRight: () => <Cart />,
-                }}>
-                <Stack.Screen name="Result" component={SearchRes} />
-                <Stack.Screen
-                  options={{headerShown: false}}
-                  name="tabs"
-                  component={TabNavigator}
-                />
-                <Stack.Screen
-                  name="Search Result"
-                  component={ResultComponent}
-                />
-                <Stack.Screen name="Details" component={DetailScreen} />
-                <Stack.Screen name="Products" component={products} />
-                <Stack.Screen name="Categories" component={companyCategories} />
-                <Stack.Screen
-                  name="Cart"
-                  component={CartScreen}
-                  options={{headerRight: () => null}}
-                />
-              </Stack.Navigator>
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </ApplicationProvider>
-      </Provider>
+      {/* <Provider store={store}> */}
+      <ApplicationProvider {...eva} theme={eva.light}>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="tabs"
+              // screenOptions={
+              //   {
+              //     headerRight: () => <Cart />,
+              //   }
+              // }
+            >
+              <Stack.Screen name="Result" component={Test} />
+              <Stack.Screen
+                options={{headerShown: false}}
+                name="tabs"
+                component={TabNavigator}
+              />
+              {/* <Stack.Screen name="Search Result" component={ResultComponent} />
+              <Stack.Screen name="Details" component={DetailScreen} />
+              <Stack.Screen name="Products" component={products} />
+              <Stack.Screen name="Categories" component={companyCategories} />
+              <Stack.Screen
+                name="Cart"
+                component={CartScreen}
+                options={{headerRight: () => null}}
+              /> */}
+              <Stack.Screen name="Search Result" component={Test} />
+              <Stack.Screen name="Details" component={Test} />
+              <Stack.Screen name="Products" component={Test} />
+              <Stack.Screen name="Categories" component={Test} />
+              <Stack.Screen
+                name="Cart"
+                component={Test}
+                options={{headerRight: () => null}}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </ApplicationProvider>
+      {/* </Provider> */}
     </>
   );
 }

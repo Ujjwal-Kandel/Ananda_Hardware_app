@@ -39,7 +39,7 @@ let getAllProducts = () => {
 };
 let getPname = (cname = '', category = '') => {
   let mappedData = null;
-  if (cname == '' || category == '') {
+  if (cname === '' || category === '') {
     mappedData = getAllProducts().map(x => x.pname);
   } else {
     mappedData = getAllProducts()
@@ -83,7 +83,7 @@ let addProduct = (
   _dimension,
 ) => {
   realm.write(() => {
-    const book = realm.create('Product', {
+    realm.create('Product', {
       cname: _cname,
       pname: _pname,
       id: _id,
@@ -124,9 +124,9 @@ let syncCompany = async () => {
       'https://logisparktech.com/aalucha-admin/api/companies',
     );
     realm.write(() => {
-     data.forEach(obj => {
-       realm.create(Company, obj);
-     });
+      data.forEach(obj => {
+        realm.create(Company, obj);
+      });
     });
   } catch (err) {
     console.log('company-data-sync-error: ', err);
