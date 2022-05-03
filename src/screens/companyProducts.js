@@ -27,11 +27,10 @@ LogBox.ignoreLogs([
 import {getAllProducts} from '../database/realm';
 import {NoSearchResults} from '../components/nosearchresults';
 
-
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
 
-export const products = ({route}) => {
+export const Products = ({route}) => {
   const props = route.params;
   const [viewType, setViewType] = useState('grid');
   const [searchProduct, setSearchProduct] = useState(null);

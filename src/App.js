@@ -20,25 +20,24 @@ import {
 // screens
 import Home from './screens/home';
 import Sync from './screens/sync';
+import Browse from './screens/browse';
+
+// redux
+import {Provider} from 'react-redux';
+import store from './store/store';
+import Cart from './components/CartScreen/Cart';
+
 // the react-native camera package creates errors
 // import ScanScreen from './screens/qr';
 
 // import {Provider} from 'react-redux';
 
-// import store from './store/store';
-
-// import home from './screens/home';
-// import sync from './screens/sync';
-// import qr from './screens/qr';
-// import browse from './screens/browse';
-// import SearchRes from './screens/searchRes';
-// import ResultComponent from './screens/resultComponent';
-// import {DetailScreen} from './components/detailScreen';
-// import {products} from './screens/companyProducts';
-// import {companyCategories} from './screens/categories';
-// import CartScreen from './screens/CartScreen';
-
-// import Cart from './components/CartScreen/Cart';
+import ResultComponent from './screens/resultComponent';
+import {DetailScreen} from './components/detailScreen';
+import {Products} from './screens/companyProducts';
+import {CompanyCategories} from './screens/categories';
+import CartScreen from './screens/CartScreen';
+import {getAllProducts} from './database/realm';
 
 // import {getAllProducts} from './database/realm';
 
@@ -71,17 +70,18 @@ const TabNavigator = () => {
         inactiveTintColor: 'black',
         headerRight: () => (
           <View style={{paddingRight: 15}}>
-            {/* <Cart /> */}
-            <Text>cart</Text>
+            <Cart />
           </View>
         ),
       }}
       tabBar={props => <BottomTabBar {...props} />}
-      // initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}
-      initialRouteName="Settings">
+      initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}
+      // initialRouteName="Settings"
+    >
       <Tab.Screen name="Home" component={Home} />
+      {/* breaks the app due to depricated module */}
       {/* <Tab.Screen name="Scan" component={ScanScreen} /> */}
-      {/* <Tab.Screen name="Browse Companies" component={browse} /> */}
+      <Tab.Screen name="Browse Companies" component={Browse} />
       <Tab.Screen name="Settings" component={Sync} />
     </Tab.Navigator>
   );
@@ -99,47 +99,41 @@ export default function App() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-      {/* <Provider store={store}> */}
-      <ApplicationProvider {...eva} theme={eva.light}>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName="tabs"
-              // screenOptions={
-              //   {
-              //     headerRight: () => <Cart />,
-              //   }
-              // }
-            >
-              <Stack.Screen name="Result" component={Test} />
-              <Stack.Screen
-                options={{headerShown: false}}
-                name="tabs"
-                component={TabNavigator}
-              />
-              {/* <Stack.Screen name="Search Result" component={ResultComponent} />
-              <Stack.Screen name="Details" component={DetailScreen} />
-              <Stack.Screen name="Products" component={products} />
-              <Stack.Screen name="Categories" component={companyCategories} />
-              <Stack.Screen
-                name="Cart"
-                component={CartScreen}
-                options={{headerRight: () => null}}
-              /> */}
-              <Stack.Screen name="Search Result" component={Test} />
-              <Stack.Screen name="Details" component={Test} />
-              <Stack.Screen name="Products" component={Test} />
-              <Stack.Screen name="Categories" component={Test} />
-              <Stack.Screen
-                name="Cart"
-                component={Test}
-                options={{headerRight: () => null}}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </ApplicationProvider>
-      {/* </Provider> */}
+      <Provider store={store}>
+        <ApplicationProvider {...eva} theme={eva.light}>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <Stack.Navigator
+                initialRouteName="tabs"
+                // screenOptions={
+                //   {
+                //     headerRight: () => <Cart />,
+                //   }
+                // }
+              >
+                <Stack.Screen name="Result" component={Test} />
+                <Stack.Screen
+                  options={{headerShown: false}}
+                  name="tabs"
+                  component={TabNavigator}
+                />
+                <Stack.Screen
+                  name="Search Result"
+                  component={ResultComponent}
+                />
+                <Stack.Screen name="Details" component={DetailScreen} />
+                <Stack.Screen name="Products" component={Products} />
+                <Stack.Screen name="Categories" component={CompanyCategories} />
+                <Stack.Screen
+                  name="Cart"
+                  component={CartScreen}
+                  options={{headerRight: () => null}}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </ApplicationProvider>
+      </Provider>
     </>
   );
 }

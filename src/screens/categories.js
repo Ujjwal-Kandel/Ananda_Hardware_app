@@ -1,16 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Text,
-  FlatList,
-} from 'react-native';
+import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
 import {Searchbar} from 'react-native-paper';
-import {
-  Icon,
-  Card,
-} from '@ui-kitten/components';
+import {Icon, Card} from '@ui-kitten/components';
 import {getCompanyCategories, getAllProducts} from '../database/realm';
 import {useNavigation} from '@react-navigation/core';
 import {
@@ -23,7 +14,7 @@ import {NoSearchResults} from '../components/nosearchresults';
 const filter = (item, query) =>
   item.toLowerCase().startsWith(query.toLowerCase());
 
-export const companyCategories = ({route}) => {
+export const CompanyCategories = ({route}) => {
   const props = route.params;
   const [companyName, setCompanyName] = useState(props.companyName);
   const [searchCategory, setSearchCategory] = useState(null);

@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -9,7 +8,7 @@ import {
 import {useNavigation} from '@react-navigation/core';
 
 import {getAllProducts} from '../database/realm';
-import {NoSearchResults} from '../components/nosearchresults';
+// import {NoSearchResults} from '../components/nosearchresults';
 import {Modal, Card} from '@ui-kitten/components';
 
 export default function ScanScreen() {
