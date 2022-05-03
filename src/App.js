@@ -96,12 +96,6 @@ const TabNavigator = () => {
 
 const Stack = createNativeStackNavigator();
 
-const Test = () => (
-  <View>
-    <Text>test</Text>
-  </View>
-);
-
 export default function App() {
   return (
     <>
