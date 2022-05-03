@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
@@ -9,11 +9,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 // ui kitten
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   ApplicationProvider,
   BottomNavigation,
   BottomNavigationTab,
+  Icon,
   IconRegistry,
 } from '@ui-kitten/components';
 
@@ -38,6 +38,7 @@ import {Products} from './screens/companyProducts';
 import {CompanyCategories} from './screens/categories';
 import CartScreen from './screens/CartScreen';
 import {getAllProducts} from './database/realm';
+import SearchRes from './screens/searchRes';
 
 // import {getAllProducts} from './database/realm';
 
@@ -48,16 +49,24 @@ const BottomTabBar = ({navigation, state}) => (
     selectedIndex={state.index}
     onSelect={index => navigation.navigate(state.routeNames[index])}>
     <BottomNavigationTab
-      title={evaProps => <Icon name="search" size={30} color="#000" />}
+      title={evaProps => (
+        <Icon name="search-outline" fill="#000" style={styles.icon} />
+      )}
+    />
+    {/* <BottomNavigationTab
+      title={evaProps => (
+        <Icon name="camera-outline" fill="#000" style={styles.icon} />
+      )}
+    /> */}
+    <BottomNavigationTab
+      title={evaProps => (
+        <Icon name="list-outline" style={styles.icon} fill="#000" />
+      )}
     />
     <BottomNavigationTab
-      title={evaProps => <Icon name="qrcode" size={30} color="#000" />}
-    />
-    <BottomNavigationTab
-      title={evaProps => <Icon name="list" size={30} color="#000" />}
-    />
-    <BottomNavigationTab
-      title={evaProps => <Icon name="gear" size={30} color="#000" />}
+      title={evaProps => (
+        <Icon name="settings-outline" style={styles.icon} fill="#000" />
+      )}
     />
   </BottomNavigation>
 );
@@ -69,7 +78,7 @@ const TabNavigator = () => {
         activeTintColor: 'red',
         inactiveTintColor: 'black',
         headerRight: () => (
-          <View style={{paddingRight: 15}}>
+          <View style={styles.headerRightIconStyles}>
             <Cart />
           </View>
         ),
@@ -106,7 +115,7 @@ export default function App() {
                 screenOptions={{
                   headerRight: () => <Cart />,
                 }}>
-                <Stack.Screen name="Result" component={Test} />
+                <Stack.Screen name="Result" component={SearchRes} />
                 <Stack.Screen
                   options={{headerShown: false}}
                   name="tabs"
@@ -134,9 +143,12 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  headerRightIconStyles: {
+    paddingRight: 15,
+  },
   icon: {
-    width: 32,
-    height: 32,
+    width: 30,
+    height: 30,
   },
   container: {
     flex: 1,

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {Icon, Card} from '@ui-kitten/components';
+
+import {Icon, Card, Input} from '@ui-kitten/components';
 import {getCompanyCategories, getAllProducts} from '../database/realm';
 import {useNavigation} from '@react-navigation/core';
 import {
@@ -72,12 +72,12 @@ export const CompanyCategories = ({route}) => {
 
   return (
     <SafeAreaView>
-      <Searchbar
+      <Input
         placeholder="Category name"
         value={searchCategory}
         onChangeText={onChangeText}
       />
-      {data == 0 ? <NoSearchResults /> : <CategoriesListView />}
+      {data === 0 ? <NoSearchResults /> : <CategoriesListView />}
     </SafeAreaView>
   );
 };

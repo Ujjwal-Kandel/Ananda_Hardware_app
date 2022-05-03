@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,10 +7,8 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {Searchbar} from 'react-native-paper';
-import {Icon, Card} from '@ui-kitten/components';
+import {Icon, Card, Input, Spinner} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
-import {Spinner} from '@ui-kitten/components';
 import TextTicker from 'react-native-text-ticker';
 import {
   widthPercentageToDP as wp,
@@ -38,18 +36,18 @@ export const Products = ({route}) => {
   const [companyName, setCompanyName] = useState(props.companyName);
   const [category, setCategoryName] = useState(props.category);
   const isMounted = useRef(null);
-  function CompanyProducts() {
+  const CompanyProducts = useCallback(() => {
     return getAllProducts().filtered(
-      `category == $0 && cname == $1`,
+      'category == $0 && cname == $1',
       category,
       companyName,
     );
-  }
+  }, [category, companyName]);
 
   const [data, setData] = useState(CompanyProducts());
   useEffect(() => {
     navigation.setOptions({title: companyName + ' - ' + capitalize(category)});
-  }, []);
+  }, [category, companyName, navigation]);
   useEffect(() => {
     isMounted.current = true;
     if (isMounted) {
@@ -65,7 +63,7 @@ export const Products = ({route}) => {
     return () => {
       isMounted.current = false;
     };
-  }, [searchProduct]);
+  }, [searchProduct, CompanyProducts]);
   // const [data1, setData] = useState(getPname(companyName, category));
 
   const onChangeText = query => {
@@ -75,7 +73,7 @@ export const Products = ({route}) => {
 
   function ListView() {
     {
-      if (viewType == 'grid') {
+      if (viewType === 'grid') {
         return (
           <View style={styles.rectangle40}>
             <FlatList
@@ -170,7 +168,7 @@ export const Products = ({route}) => {
 
   return (
     <SafeAreaView>
-      <Searchbar
+      <Input
         placeholder="Product name"
         value={searchProduct}
         onChangeText={onChangeText}
