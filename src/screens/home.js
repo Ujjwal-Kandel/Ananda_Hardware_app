@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -13,6 +13,8 @@ import {
   Text,
   Autocomplete,
   AutocompleteItem,
+  Input,
+  Button,
 } from '@ui-kitten/components';
 import {Searchbar, RadioButton} from 'react-native-paper';
 import {getAllProducts, getPname} from '../database/realm';
@@ -22,10 +24,12 @@ import {
 } from 'react-native-responsive-screen';
 import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import {useNavigation} from '@react-navigation/core';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
 
+const DATA = getPname();
 export default function Home(props) {
   //for search
   const [searchQuery, setSearchQuery] = useState(null);
@@ -33,14 +37,21 @@ export default function Home(props) {
   const navigation = useNavigation();
   const [advancedSearchToggle, setAdvancedSearchToggle] = useState(false);
 
+  // for product autocomplete search
+  const [showAutoComplete, setShowAutoComplete] = useState(false);
+  const [filteredData, setFilteredData] = useState(DATA);
+  const [productName, setProductName] = useState('');
+
+  const productSearchRef = useRef();
   const onCheckedChange = isChecked => {
     setAdvancedSearchToggle(isChecked);
   };
 
-  const onSelect = index => {
+  const onSelect = name => {
     let code = getAllProducts()
-      .filtered('pname==$0', data[index])
+      .filtered('pname==$0', name)
       .map(x => x.code)[0];
+
     navigation.navigate('Details', {code: code});
     setSearchQuery();
     setData(getPname());
@@ -77,7 +88,7 @@ export default function Home(props) {
   );
 
   //for radiobutton to select search type:
-  const [value, setValue] = React.useState('first');
+  const [value, setValue] = useState('first');
 
   const handleSearchSubmit = () => {
     if (searchQuery) {
@@ -87,6 +98,25 @@ export default function Home(props) {
     }
   };
 
+  const ClearSearchButton = () => {
+    return (
+      <Pressable
+        onPress={() => {
+          setShowAutoComplete(false);
+          setProductName('');
+          if (productSearchRef.current) {
+            productSearchRef.current.blur();
+            productSearchRef.current.focus();
+          }
+        }}>
+        <Icon
+          name="close-outline"
+          style={{height: 20, width: 24}}
+          fill="#000"
+        />
+      </Pressable>
+    );
+  };
   const SearchToggle = () => (
     <View
       style={{
@@ -118,7 +148,7 @@ export default function Home(props) {
     <SafeAreaView>
       <KeyboardAvoidingView>
         <SearchToggle />
-        <ScrollView>
+        <View>
           {advancedSearchToggle ? (
             <View>
               <View style={styles.RectangleShapeView}>
@@ -147,7 +177,7 @@ export default function Home(props) {
                             backgroundColor: '#E7E7E7',
                             borderRadius: 14,
                           }}></RadioButton>
-                        <View style={{marginTop: '6%'}}>
+                        <View>
                           <Text style={styles.text1}>Starts With</Text>
                         </View>
                       </View>
@@ -160,7 +190,7 @@ export default function Home(props) {
                             borderRadius: 14,
                           }}
                         />
-                        <View style={{marginTop: '6%'}}>
+                        <View>
                           <Text style={styles.text1}>Contains</Text>
                         </View>
                       </View>
@@ -176,7 +206,7 @@ export default function Home(props) {
             </View>
           ) : (
             <View>
-              <Autocomplete
+              {/* <Autocomplete
                 placeholder="Product Name"
                 value={searchQuery}
                 size="large"
@@ -189,15 +219,65 @@ export default function Home(props) {
                 }}
                 onSelect={onSelect}>
                 {data.map(renderOption)}
-              </Autocomplete>
+              </Autocomplete> */}
+              <Input
+                placeholder="Product Name"
+                style={styles.SearchProduct}
+                onFocus={() => setShowAutoComplete(true)}
+                ref={productSearchRef}
+                onBlur={() => {
+                  if (!productName.length) {
+                    setShowAutoComplete(false);
+                  }
+                }}
+                onChangeText={val => {
+                  // if (productName.length !== 0) {
+                  //   setShowAutoComplete(true);
+                  // }
+                  setProductName(val);
+                }}
+                accessoryRight={<ClearSearchButton />}
+                value={productName}
+              />
+
+              {filteredData && showAutoComplete ? (
+                <ScrollView style={styles.AutocompleteArea}>
+                  {filteredData
+                    .filter(el =>
+                      String(el)
+                        .toLowerCase()
+                        .includes(productName.toLowerCase()),
+                    )
+                    .map(el => (
+                      <TouchableOpacity
+                        key={el}
+                        onPress={() => onSelect(el)}
+                        style={styles.AutocompleteItem}>
+                        <Text>{el}</Text>
+                      </TouchableOpacity>
+                    ))}
+                </ScrollView>
+              ) : null}
             </View>
           )}
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
+  SearchProduct: {
+    borderRadius: 15,
+    paddingHorizontal: 10,
+  },
+  AutocompleteItem: {
+    paddingVertical: 3,
+    paddingLeft: 15,
+  },
+  AutocompleteArea: {
+    backgroundColor: '#fff',
+  },
+
   RectangleShapeView: {
     justifyContent: 'space-evenly',
     position: 'relative',
@@ -220,6 +300,7 @@ const styles = StyleSheet.create({
     height: hp('5%'),
     backgroundColor: '#E7E7E7',
     borderRadius: 7,
+    alignItems: 'center',
   },
   header: {
     fontFamily: 'Montserrat-Bold',
