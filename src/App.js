@@ -75,9 +75,7 @@ const TabNavigator = () => {
         ),
       }}
       tabBar={props => <BottomTabBar {...props} />}
-      initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}
-      // initialRouteName="Settings"
-    >
+      initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}>
       <Tab.Screen name="Home" component={Home} />
       {/* breaks the app due to depricated module */}
       {/* <Tab.Screen name="Scan" component={ScanScreen} /> */}
@@ -105,12 +103,9 @@ export default function App() {
             <NavigationContainer>
               <Stack.Navigator
                 initialRouteName="tabs"
-                // screenOptions={
-                //   {
-                //     headerRight: () => <Cart />,
-                //   }
-                // }
-              >
+                screenOptions={{
+                  headerRight: () => <Cart />,
+                }}>
                 <Stack.Screen name="Result" component={Test} />
                 <Stack.Screen
                   options={{headerShown: false}}
