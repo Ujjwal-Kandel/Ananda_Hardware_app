@@ -10,20 +10,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {
-  Modal,
-  Spinner,
-  Card,
-} from '@ui-kitten/components';
+import {Modal, Spinner, Card} from '@ui-kitten/components';
 
-import {
-  deleteAllProduct,
-  syncData,
-  syncCompany,
-} from '../database/realm';
+import {deleteAllProduct, syncData, syncCompany} from '../database/realm';
 import {SyncStatus} from '../components/syncStatus';
 
-export default function sync() {
+export default function Sync() {
   const [syncStatus, setSyncStatus] = useState({
     title: '',
     msg: '',

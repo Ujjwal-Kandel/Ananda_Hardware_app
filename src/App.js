@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
+// ui kitten
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -15,6 +16,12 @@ import {
   BottomNavigationTab,
   IconRegistry,
 } from '@ui-kitten/components';
+
+// screens
+import Home from './screens/home';
+import Sync from './screens/sync';
+// the react-native camera package creates errors
+// import ScanScreen from './screens/qr';
 
 // import {Provider} from 'react-redux';
 
@@ -71,11 +78,11 @@ const TabNavigator = () => {
       }}
       tabBar={props => <BottomTabBar {...props} />}
       // initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}
-    >
-      <Tab.Screen name="Home" component={Test} />
-      {/* <Tab.Screen name="Scan" component={qr} />
-      <Tab.Screen name="Browse Companies" component={browse} />
-      <Tab.Screen name="Settings" component={sync} /> */}
+      initialRouteName="Settings">
+      <Tab.Screen name="Home" component={Home} />
+      {/* <Tab.Screen name="Scan" component={ScanScreen} /> */}
+      {/* <Tab.Screen name="Browse Companies" component={browse} /> */}
+      <Tab.Screen name="Settings" component={Sync} />
     </Tab.Navigator>
   );
 };

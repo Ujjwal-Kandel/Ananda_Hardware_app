@@ -26,7 +26,7 @@ import {useNavigation} from '@react-navigation/core';
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
 
-export default function home(props) {
+export default function Home(props) {
   //for search
   const [searchQuery, setSearchQuery] = useState(null);
   const [data, setData] = useState(getPname());
@@ -187,7 +187,6 @@ export default function home(props) {
                   borderRadius: 25,
                   paddingHorizontal: 15,
                 }}
-                size="large"
                 onSelect={onSelect}>
                 {data.map(renderOption)}
               </Autocomplete>
