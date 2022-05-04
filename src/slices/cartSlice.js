@@ -60,24 +60,25 @@ export default cartSlice.reducer;
 export const selectCartItems = state => state.cart.cartItems;
 
 export const selectCartItemByCode = (state, productCode) => {
-  cartItem = state.cart.cartItems.find(
-    cartItem => cartItem.product.code === productCode,
-  );
-  if (cartItem) {
-    return cartItem;
-  } else {
+  if (!state.cart) {
     return null;
   }
+
+  const cartItem = state.cart.cartItems.find(
+    item => item.product.code === productCode,
+  );
+  if (!cartItem) {
+    return null;
+  }
+  return cartItem;
 };
 
 export const selectCartItemCount = (state, productCode) => {
-  cartItem = selectCartItemByCode(productCode);
-  if (cartItem) {
-    const itemCount = cartItem.quantity;
-    return itemCount;
-  } else {
+  const cartItem = selectCartItemByCode(state, productCode);
+  if (!cartItem) {
     return null;
   }
+  return cartItem.quantity;
 };
 
 export const {

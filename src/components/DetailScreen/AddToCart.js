@@ -3,8 +3,12 @@ import React, {useState} from 'react';
 
 import {Icon, Text, Button, useTheme} from '@ui-kitten/components';
 
-import {useDispatch} from 'react-redux';
-import {addToCart} from '../../slices/cartSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  addToCart,
+  selectCartItemByCode,
+  selectCartItemCount,
+} from '../../slices/cartSlice';
 
 const AddToCart = ({product}) => {
   const theme = useTheme();
@@ -31,6 +35,22 @@ const AddToCart = ({product}) => {
       }),
     );
   };
+
+  const {code: productCode} = product;
+  const cartQuantity = useSelector(state =>
+    selectCartItemCount(state, productCode),
+  );
+  const cartItem = useSelector(state =>
+    selectCartItemByCode(state, productCode),
+  );
+
+  const isAddToCartDisabled =
+    itemCount > product.stock - 1 ||
+    (cartQuantity ? cartQuantity + itemCount > product.stock : false);
+
+  const isAddToCartIncrementorDisabled =
+    itemCount > product.stock - 1 ||
+    (cartQuantity ? cartQuantity + itemCount > product.stock - 1 : false);
   return (
     <View style={styles.addToCartContainer(theme)}>
       <View style={styles.cartItemCountContainer}>
@@ -50,7 +70,8 @@ const AddToCart = ({product}) => {
         <TouchableOpacity
           onPress={() => {
             incrementHandler();
-          }}>
+          }}
+          disabled={isAddToCartIncrementorDisabled}>
           <Icon
             name="plus-outline"
             style={styles.iconSize}
@@ -61,8 +82,10 @@ const AddToCart = ({product}) => {
       <Button
         onPress={() => {
           addItemToCart();
-        }}>
-        <Text category="s2">Add To Cart</Text>
+          setItemCount(1);
+        }}
+        disabled={isAddToCartDisabled}>
+        <Text category="s2">Add To Cart </Text>
       </Button>
     </View>
   );
