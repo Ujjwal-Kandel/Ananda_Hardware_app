@@ -9,7 +9,14 @@ import {useNavigation} from '@react-navigation/core';
 import {getAllProducts} from '../database/realm';
 // import {NoSearchResults} from '../components/nosearchresults';
 import {Modal, Card} from '@ui-kitten/components';
-import {CameraScreen} from 'react-native-camera-kit';
+
+const QRCodeScanner = () => {
+  return (
+    <View>
+      <Text>qrcode scanner </Text>
+    </View>
+  );
+};
 
 export default function ScanScreen() {
   const [dataFound, setDataFound] = useState(null);
@@ -18,36 +25,24 @@ export default function ScanScreen() {
   useEffect(() => {
     setVisible(false);
   }, []);
-  const navigation = useNavigation();
-  const onSuccess = e => {
-    if (getAllProducts().filtered('code==$0', e.data) != 0) {
-      navigation.navigate('Details', {code: e.data});
-      setDataFound(true);
-      // setVisible(false);
-    } else {
-      setDataFound(false);
-      setVisible(true);
-    }
-  };
+  // const navigation = useNavigation();
+  // const onSuccess = e => {
+  //   if (getAllProducts().filtered('code==$0', e.data) !== 0) {
+  //     navigation.navigate('Details', {code: e.data});
+  //     setDataFound(true);
+  //     // setVisible(false);
+  //   } else {
+  //     setDataFound(false);
+  //     setVisible(true);
+  //   }
+  // };
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       {!visible && (
         <View style={styles.container}>
           <Text style={styles.text}>Place the scanner above the QR code</Text>
-          {/* <QRCodeScanner
-            style={{height: hp('100%')}}
-            fadeIn={false}
-            reactivate={true}
-            reactivateTimeout={6000}
-            onRead={onSuccess}
-            useGoogleVision={false} // if you enable mlkit, you can set this to true
-            // flashMode={RNCamera.Constants.FlashMode.torch}
-          /> */}
-          <CameraScreen
-            actions={{rightButtonText: 'Done', leftButtonText: 'Cancel'}}
-            onBottomButtonPressed={event => this.onBottomButtonPressed(event)}
-          />
+          <QRCodeScanner />
         </View>
       )}
       <Modal visible={visible} onBackdropPress={() => setVisible(false)}>
