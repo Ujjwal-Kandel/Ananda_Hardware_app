@@ -44,9 +44,9 @@ const AddToCart = ({product}) => {
     selectCartItemByCode(state, productCode),
   );
 
-  const isAddToCartDisabled =
-    itemCount > product.stock - 1 ||
-    (cartQuantity ? cartQuantity + itemCount > product.stock : false);
+  const isAddToCartDisabled = cartQuantity
+    ? cartQuantity + itemCount > product.stock
+    : false;
 
   const isAddToCartIncrementorDisabled =
     itemCount > product.stock - 1 ||
