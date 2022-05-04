@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -10,6 +9,7 @@ import {useNavigation} from '@react-navigation/core';
 import {getAllProducts} from '../database/realm';
 // import {NoSearchResults} from '../components/nosearchresults';
 import {Modal, Card} from '@ui-kitten/components';
+import {CameraScreen} from 'react-native-camera-kit';
 
 export default function ScanScreen() {
   const [dataFound, setDataFound] = useState(null);
@@ -35,7 +35,7 @@ export default function ScanScreen() {
       {!visible && (
         <View style={styles.container}>
           <Text style={styles.text}>Place the scanner above the QR code</Text>
-          <QRCodeScanner
+          {/* <QRCodeScanner
             style={{height: hp('100%')}}
             fadeIn={false}
             reactivate={true}
@@ -43,20 +43,17 @@ export default function ScanScreen() {
             onRead={onSuccess}
             useGoogleVision={false} // if you enable mlkit, you can set this to true
             // flashMode={RNCamera.Constants.FlashMode.torch}
+          /> */}
+          <CameraScreen
+            actions={{rightButtonText: 'Done', leftButtonText: 'Cancel'}}
+            onBottomButtonPressed={event => this.onBottomButtonPressed(event)}
           />
         </View>
       )}
       <Modal visible={visible} onBackdropPress={() => setVisible(false)}>
         <Card>
           <View>
-            <View
-              style={{
-                alignItems: 'center',
-                flex: 1,
-                alignContent: 'center',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
+            <View style={styles.modalView}>
               <Text style={styles.titleText}>No Product Found</Text>
 
               <Text style={styles.msgText}>QR code may be invalid.</Text>
@@ -97,5 +94,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Regular',
     textAlign: 'center',
     marginTop: 10,
+  },
+  modalView: {
+    alignItems: 'center',
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
   },
 });
