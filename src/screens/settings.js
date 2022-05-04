@@ -66,7 +66,7 @@ export default function settings() {
           <ActivityIndicator size="large" color="#000000" />
         ) : (
           <View style={styles.errCont}>
-            {error == 'Sync succesful! Your products are updated.' ? (
+            {error === 'Sync succesful! Your products are updated.' ? (
               <Text style={styles.errText1}> {error} </Text>
             ) : (
               <Text style={styles.errText}> {error} </Text>
@@ -74,15 +74,6 @@ export default function settings() {
           </View>
         )}
       </View>
-      {/* <View style={{padding: 20}} />
-        <Button
-          style={{paddingVertical: 8}}
-          onPress={() => {
-            deleteAllProduct();
-            setData(getAllProducts());
-          }}>
-          Delete all books
-        </Button> */}
     </SafeAreaView>
   );
 }

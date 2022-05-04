@@ -1,14 +1,8 @@
 // SHOWS THE RESULT FROM SEARCH
 
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Text,
-  FlatList,
-} from 'react-native';
-import { Card } from '@ui-kitten/components';
+import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
+import {Card} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 import {
@@ -16,9 +10,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import {
-  getAllProducts,
-} from '../database/realm';
+import {getAllProducts} from '../database/realm';
 import {NoSearchResults} from '../components/nosearchresults';
 
 export default function SearchRes({route}) {
@@ -38,8 +30,9 @@ export default function SearchRes({route}) {
     );
   }
   function Second() {
-    if (Containing() == 0) return <NoSearchResults />;
-    else {
+    if (Containing() === 0) {
+      return <NoSearchResults />;
+    } else {
       return (
         <FlatList
           data={Containing()}
@@ -133,10 +126,10 @@ export default function SearchRes({route}) {
       );
     }
   }
-  
+
   return (
     <SafeAreaView>
-      {props.value == 'first' ? <First /> : <Second />}
+      {props.value === 'first' ? <First /> : <Second />}
     </SafeAreaView>
   );
 }

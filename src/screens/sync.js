@@ -10,10 +10,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Modal, Spinner, Card} from '@ui-kitten/components';
+import {Modal, Spinner, Card, Button} from '@ui-kitten/components';
 
 import {deleteAllProduct, syncData, syncCompany} from '../database/realm';
 import {SyncStatus} from '../components/syncStatus';
+import {useAuth} from '../auth/context/auth';
 
 export default function Sync() {
   const [syncStatus, setSyncStatus] = useState({
@@ -50,6 +51,7 @@ export default function Sync() {
     combinedFunc();
     setVisible(true);
   };
+  const {signOut} = useAuth();
 
   return (
     <SafeAreaView>
@@ -89,11 +91,18 @@ export default function Sync() {
           </Card>
         </Modal>
       </View>
+      <View style={styles.logoutButtonWrapper}>
+        <Button style={styles.logoutButton} onPress={signOut}>
+          Logout
+        </Button>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  logoutButtonWrapper: {alignItems: 'center'},
+  logoutButton: {marginTop: 30, width: '60%'},
   errorText: {
     fontFamily: 'Lato-Regular',
     color: '#FF4E2B',
