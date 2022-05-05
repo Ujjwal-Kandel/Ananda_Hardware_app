@@ -18,9 +18,19 @@ import {
   decrementQuantity,
   removeFromCart,
   resetCart,
+  selectCartItemCount,
 } from '../../slices/cartSlice';
+import {getAllProducts} from '../../database/realm';
 
 const CartItem = ({cartItem, handleChange}) => {
+  // const productStock = useSelector(state =>
+  //   selectCartItemCount(state, cartItem.product.code),
+  // );
+  // console.log({productStock});
+  const productStock = getAllProducts().filtered(
+    'code==$0',
+    cartItem.product.code,
+  )[0]?.stock;
   return (
     <View style={styles.rowFlexContainer}>
       <Image
@@ -73,6 +83,7 @@ const CartItem = ({cartItem, handleChange}) => {
             </TouchableOpacity>
             <Text category="h6">{cartItem.quantity}</Text>
             <TouchableOpacity
+              disabled={cartItem.quantity > productStock - 1}
               onPress={() => {
                 handleChange('increment', cartItem.product.id);
               }}>

@@ -8,7 +8,8 @@ import {AuthProvider, useAuth} from '../auth/context/auth';
 
 const RootStack = () => {
   const Stack = createNativeStackNavigator();
-  const {authData} = useAuth();
+  // const {authData} = useAuth();
+  const {authData} = {authData: true};
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
