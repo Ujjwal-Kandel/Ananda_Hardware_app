@@ -12,7 +12,6 @@ import {getAllProducts} from '../database/realm';
 import {Modal, Card} from '@ui-kitten/components';
 
 export default function ScanScreen() {
-  const [dataFound, setDataFound] = useState(null);
   const [visible, setVisible] = useState(null);
 
   useEffect(() => {
@@ -20,12 +19,10 @@ export default function ScanScreen() {
   }, []);
   const navigation = useNavigation();
   const onSuccess = e => {
-    if (getAllProducts().filtered('code==$0', e.data) != 0) {
+    console.log({e});
+    if (getAllProducts().filtered('code==$0', e.data).length !== 0) {
       navigation.navigate('Details', {code: e.data});
-      setDataFound(true);
-      // setVisible(false);
     } else {
-      setDataFound(false);
       setVisible(true);
     }
   };

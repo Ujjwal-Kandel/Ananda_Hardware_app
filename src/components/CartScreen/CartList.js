@@ -21,6 +21,7 @@ import {
 } from '../../slices/cartSlice';
 
 const CartItem = ({cartItem, handleChange}) => {
+  console.log(cartItem.product.image[0]);
   return (
     <View style={styles.rowFlexContainer}>
       <Image

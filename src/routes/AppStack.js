@@ -9,6 +9,7 @@ import {
   BottomNavigation,
   BottomNavigationTab,
   Icon,
+  Text,
 } from '@ui-kitten/components';
 // component
 import Cart from '../components/CartScreen/Cart';
@@ -68,8 +69,13 @@ const TabNavigator = () => {
       }}
       tabBar={props => <BottomTabBar {...props} />}
       initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}>
-      <Tab.Screen name="Home" component={Home} />
-      {/* breaks the app due to depricated module */}
+      <Tab.Screen
+        options={{
+          headerTitle: () => <Text category="h6">Home</Text>,
+        }}
+        name="Home"
+        component={Home}
+      />
       <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Browse Companies" component={Browse} />
       <Tab.Screen name="Settings" component={Sync} />

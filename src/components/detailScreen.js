@@ -33,6 +33,7 @@ export const DetailScreen = ({route}) => {
   const [product, setProduct] = useState(
     getAllProducts().filtered('code==$0', props.code)[0],
   );
+  console.log(route.params.code, product);
 
   useEffect(() => {
     navigation.setOptions({title: product.pname});

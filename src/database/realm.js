@@ -18,7 +18,7 @@ Product.schema = {
     cname: 'string',
     pname: 'string',
     id: 'int',
-    price: 'string',
+    price: 'double',
     code: 'string',
     category: 'string',
     image: 'string[]',
@@ -64,7 +64,7 @@ let getCompanyNames = () => {
 
 let getCompanyCategories = cname => {
   const mappedData = getAllProducts()
-    .filtered('cname == $0', cname)
+    .filtered('cname == $0', String(cname).toUpperCase())
     .map(x => x.category);
   const resData = new Set(mappedData);
   const companyCategories = Array.from(resData);
@@ -105,8 +105,9 @@ let deleteAllProduct = () => {
 let syncData = async () => {
   try {
     const {data} = await axios.get('/api/products');
+    console.log({data});
     realm.write(() => {
-      data.forEach(obj => {
+      data?.data.products.forEach(obj => {
         realm.create(Product, obj);
       });
     });
@@ -120,7 +121,7 @@ let syncCompany = async () => {
   try {
     const {data} = await axios.get('/api/companies');
     realm.write(() => {
-      data.forEach(obj => {
+      data?.data.companies.forEach(obj => {
         realm.create(Company, obj);
       });
     });

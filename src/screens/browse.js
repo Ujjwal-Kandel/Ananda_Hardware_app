@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
-import {Icon, Card, Input} from '@ui-kitten/components';
+import {StyleSheet, View, SafeAreaView, FlatList} from 'react-native';
+import {Icon, Card, Input, Text, MenuItem} from '@ui-kitten/components';
 
 import {useNavigation} from '@react-navigation/native';
 import {
@@ -10,6 +10,7 @@ import {
 
 import {getAllCompany} from '../database/realm';
 import {NoSearchResults} from '../components/nosearchresults';
+import {useTheme} from '@ui-kitten/components';
 
 const filter = (item, query) =>
   item.toLowerCase().startsWith(query.toLowerCase());
@@ -31,61 +32,42 @@ export default function Browse() {
   };
 
   function CompanyListView() {
+    const theme = useTheme();
     return (
       <View style={styles.rectangle40}>
         <FlatList
-          numColumns={2}
           data={data}
           keyExtractor={(item, index) => index.toString()}
           ListFooterComponent={<View style={{height: hp('30%')}} />}
           renderItem={({item, index}) => {
             return (
-              <View style={{justifyContent: 'space-between', flex: 1}}>
-                <Card
-                  style={styles.card}
-                  onPress={() =>
-                    navigation.navigate('Categories', {
-                      companyName: item.name,
-                    })
-                  }>
-                  <View
-                    style={{
-                      height: '100%',
-                      justifyContent: 'space-evenly',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        fontFamily: 'Lato-Regular',
-                        color: '#000',
-                        fontSize: 20,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                        textAlignVertical: 'center',
-                      }}>
-                      {item.name}
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: 'Lato-Regular',
-                        color: '#191919',
-                        fontSize: 14,
-                        fontWeight: '400',
-                        textAlign: 'center',
-                        textAlignVertical: 'center',
-                        marginTop: 'auto',
-                      }}>
-                      No of products: {item.product_count}
-                    </Text>
+              <MenuItem
+                style={styles.card}
+                onPress={() =>
+                  navigation.navigate('Categories', {
+                    companyName: item.name,
+                  })
+                }
+                accessoryRight={() => (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text>{item.product_count}</Text>
+                    <Icon
+                      name="inbox-outline"
+                      style={{width: 25, height: 25}}
+                      fill={theme['color-primary-500']}
+                    />
                   </View>
-                </Card>
-              </View>
+                )}
+                title={() => <Text category="s1">{item.name}</Text>}
+              />
             );
           }}
         />
       </View>
     );
   }
+
+  // inbox-outline
   return (
     <SafeAreaView>
       <Input
@@ -99,84 +81,12 @@ export default function Browse() {
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    marginTop: 50,
-  },
   card: {
     margin: 2,
-    marginTop: '10%',
-    width: wp('45%'),
-    height: hp('15%'),
-    marginLeft: '2%',
-  },
-  card1: {
-    backgroundColor: '#F5E5DA',
-    width: wp('92%'),
-    height: hp('13%'),
-    marginLeft: 15,
-    margin: 2,
-  },
-  header: {
-    fontWeight: '400',
-    fontSize: 22,
-    fontFamily: 'Lato-Regular',
-    marginLeft: '5%',
-    width: wp('50%'),
     marginTop: '2%',
   },
   rectangle40: {
     position: 'relative',
-    width: '95%',
     borderRadius: 15,
-    marginLeft: '2%',
-  },
-  image1: {
-    flex: 1,
-    width: wp('33%'),
-    height: hp('20%'),
-    resizeMode: 'contain',
-    // marginLeft: 30,
-    // marginTop: 55,
-    // borderRadius: 30,
-  },
-  namecode: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 12,
-    fontWeight: '400',
-    marginLeft: 0,
-    width: wp('100%'),
-  },
-  price: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 12,
-    fontWeight: '400',
-    marginLeft: '10%',
-    width: 150,
-  },
-  text1: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 17,
-    fontWeight: '400',
-  },
-  price1: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 18,
-    fontWeight: '400',
-    marginTop: 65,
-    position: 'absolute',
-    marginLeft: 266,
-    width: 150,
-  },
-  namecode1: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 18,
-    fontWeight: '400',
-    marginLeft: 0,
   },
 });

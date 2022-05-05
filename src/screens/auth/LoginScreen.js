@@ -18,6 +18,7 @@ function LoginScreen({navigation, route}) {
     if (!signInData.email && !signInData.password) {
       return;
     }
+    console.log({signInData});
     signIn(signInData);
   };
 

@@ -40,7 +40,7 @@ export const Products = ({route}) => {
     return getAllProducts().filtered(
       'category == $0 && cname == $1',
       category,
-      companyName,
+      String(companyName).toUpperCase(),
     );
   }, [category, companyName]);
 
