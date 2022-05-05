@@ -4,11 +4,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 import {NavigationContainer} from '@react-navigation/native';
-import {AuthProvider, useAuth} from '../auth/context/auth';
+import {AuthProvider, useAuth} from '../services/context/auth';
 
 const RootStack = () => {
   const Stack = createNativeStackNavigator();
-  const {authData} = useAuth();
+  // const {authData} = useAuth();
+  const {authData} = {authData: true};
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>

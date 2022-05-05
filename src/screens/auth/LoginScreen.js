@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import {useAuth} from '../../auth/context/auth';
+import {useAuth} from '../../services/context/auth';
 
 function LoginScreen({navigation, route}) {
   const [signInData, setSignInData] = useState({email: '', password: ''});

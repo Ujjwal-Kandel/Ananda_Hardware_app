@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import axios from 'axios';
+import axios from '../services/httpService';
 
 class Company extends Realm.Object {}
 Company.schema = {
@@ -104,9 +104,7 @@ let deleteAllProduct = () => {
 
 let syncData = async () => {
   try {
-    const {data} = await axios.get(
-      'https://logisparktech.com/aalucha-admin/api/products',
-    );
+    const {data} = await axios.get('/api/products');
     realm.write(() => {
       data.forEach(obj => {
         realm.create(Product, obj);
@@ -120,9 +118,7 @@ let syncData = async () => {
 
 let syncCompany = async () => {
   try {
-    const {data} = await axios.get(
-      'https://logisparktech.com/aalucha-admin/api/companies',
-    );
+    const {data} = await axios.get('/api/companies');
     realm.write(() => {
       data.forEach(obj => {
         realm.create(Company, obj);

@@ -14,7 +14,7 @@ import {Modal, Spinner, Card, Button} from '@ui-kitten/components';
 
 import {deleteAllProduct, syncData, syncCompany} from '../database/realm';
 import {SyncStatus} from '../components/syncStatus';
-import {useAuth} from '../auth/context/auth';
+import {useAuth} from '../services/context/auth';
 
 export default function Sync() {
   const [syncStatus, setSyncStatus] = useState({
