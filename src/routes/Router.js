@@ -12,7 +12,7 @@ const RootStack = () => {
 
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
-      {!authData ? (
+      {authData ? (
         <Stack.Screen component={AuthStack} name="AuthStack" />
       ) : (
         <Stack.Screen component={AppStack} name="AppStack" />

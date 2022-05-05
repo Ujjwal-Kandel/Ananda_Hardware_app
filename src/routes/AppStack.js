@@ -19,6 +19,7 @@ import {CompanyCategories} from '../screens/categories';
 import CartScreen from '../screens/CartScreen';
 import {getAllProducts} from '../database/realm';
 import SearchRes from '../screens/searchRes';
+import ScanScreen from '../screens/qr';
 // screen
 import Home from '../screens/home';
 import Browse from '../screens/browse';
@@ -35,11 +36,11 @@ const BottomTabBar = ({navigation, state}) => (
         <Icon name="search-outline" fill="#000" style={styles.icon} />
       )}
     />
-    {/* <BottomNavigationTab
+    <BottomNavigationTab
       title={evaProps => (
         <Icon name="camera-outline" fill="#000" style={styles.icon} />
       )}
-    /> */}
+    />
     <BottomNavigationTab
       title={evaProps => (
         <Icon name="list-outline" style={styles.icon} fill="#000" />
@@ -69,7 +70,7 @@ const TabNavigator = () => {
       initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}>
       <Tab.Screen name="Home" component={Home} />
       {/* breaks the app due to depricated module */}
-      {/* <Tab.Screen name="Scan" component={ScanScreen} /> */}
+      <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Browse Companies" component={Browse} />
       <Tab.Screen name="Settings" component={Sync} />
     </Tab.Navigator>
