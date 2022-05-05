@@ -1,8 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
+import {StyleSheet, View, SafeAreaView, FlatList} from 'react-native';
 
-import {Icon, Card, Input} from '@ui-kitten/components';
-import {getCompanyCategories, getAllProducts} from '../database/realm';
+import {Icon, Card, Input, Menu, MenuItem, Text} from '@ui-kitten/components';
+import {
+  getCompanyCategories,
+  getAllProducts,
+  getCompanyCategoriesProducts,
+} from '../database/realm';
 import {useNavigation} from '@react-navigation/core';
 import {
   widthPercentageToDP as wp,
@@ -10,6 +14,8 @@ import {
 } from 'react-native-responsive-screen';
 import {capitalize} from 'lodash';
 import {NoSearchResults} from '../components/nosearchresults';
+import {ProductQuantityIcon} from './browse';
+import TextTicker from 'react-native-text-ticker';
 
 const filter = (item, query) =>
   item.toLowerCase().startsWith(query.toLowerCase());
@@ -40,29 +46,46 @@ export const CompanyCategories = ({route}) => {
   }
 
   function CategoriesListView() {
+    const categoryQuantity = 10;
+
+    const getCategoryQuantity = category => {
+      let products = getCompanyCategoriesProducts(category, companyName);
+      return products.reduce((acc, el) => el.stock + acc, 0);
+    };
     return (
       <View style={styles.container}>
         <FlatList
-          numColumns={2}
           data={data}
           keyExtractor={(item, index) => index.toString()}
           ListFooterComponent={<View style={{height: hp('30%')}} />}
           renderItem={({item, index}) => {
             return (
-              <View style={{justifyContent: 'space-between', flex: 1}}>
-                <Card
-                  style={styles.card}
-                  onPress={() =>
-                    navigation.navigate('Products', {
-                      companyName: companyName,
-                      category: item,
-                    })
-                  }>
+              <MenuItem
+                style={styles.card}
+                onPress={() =>
+                  navigation.navigate('Products', {
+                    companyName: companyName,
+                    category: item,
+                  })
+                }
+                title={() => (
                   <View style={styles.cardTextContainer}>
-                    <Text style={styles.cardText}>{capitalize(item)}</Text>
+                    <TextTicker
+                      duration={4000}
+                      loop
+                      bounce
+                      repeatSpacer={50}
+                      marqueeDelay={1000}>
+                      {item}
+                    </TextTicker>
                   </View>
-                </Card>
-              </View>
+                )}
+                accessoryRight={() => {
+                  return (
+                    <ProductQuantityIcon quantity={getCategoryQuantity(item)} />
+                  );
+                }}
+              />
             );
           }}
         />
@@ -85,9 +108,8 @@ export const CompanyCategories = ({route}) => {
 const styles = StyleSheet.create({
   card: {
     margin: 2,
-    marginTop: '10%',
-    width: wp('45%'),
-    height: hp('15%'),
+    marginTop: '5%',
+    height: hp('8%'),
     marginLeft: '2%',
   },
   cardText: {

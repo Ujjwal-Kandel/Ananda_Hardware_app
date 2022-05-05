@@ -71,6 +71,15 @@ let getCompanyCategories = cname => {
   return companyCategories;
 };
 
+let getCompanyCategoriesProducts = (category, cname) => {
+  let data = getAllProducts().filtered(
+    'category == $0 && cname == $1',
+    category,
+    String(cname).toUpperCase(),
+  );
+  return data;
+};
+
 let addProduct = (
   _cname,
   _pname,
@@ -141,4 +150,5 @@ export {
   getAllCompany,
   getPname,
   getCompanyCategories,
+  getCompanyCategoriesProducts,
 };

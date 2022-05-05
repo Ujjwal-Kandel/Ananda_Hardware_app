@@ -19,7 +19,7 @@ export default function ScanScreen() {
   }, []);
   const navigation = useNavigation();
   const onSuccess = e => {
-    console.log({e});
+    console.log(e.data);
     if (getAllProducts().filtered('code==$0', e.data).length !== 0) {
       navigation.navigate('Details', {code: e.data});
     } else {

@@ -15,6 +15,20 @@ import {useTheme} from '@ui-kitten/components';
 const filter = (item, query) =>
   item.toLowerCase().startsWith(query.toLowerCase());
 
+export const ProductQuantityIcon = ({quantity}) => {
+  const theme = useTheme();
+  return (
+    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <Text>{quantity}</Text>
+      <Icon
+        name="inbox-outline"
+        style={{width: 25, height: 25}}
+        fill={theme['color-primary-500']}
+      />
+    </View>
+  );
+};
+
 export default function Browse() {
   const navigation = useNavigation();
   const [value, setValue] = React.useState(null);
@@ -49,16 +63,13 @@ export default function Browse() {
                   })
                 }
                 accessoryRight={() => (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text>{item.product_count}</Text>
-                    <Icon
-                      name="inbox-outline"
-                      style={{width: 25, height: 25}}
-                      fill={theme['color-primary-500']}
-                    />
-                  </View>
+                  <ProductQuantityIcon quantity={item.product_count} />
                 )}
-                title={() => <Text category="s1">{item.name}</Text>}
+                title={() => (
+                  <Text category="s1" style={{fontSize: 18}}>
+                    {item.name}
+                  </Text>
+                )}
               />
             );
           }}
