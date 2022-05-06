@@ -6,6 +6,8 @@ import AuthStack from './AuthStack';
 import {NavigationContainer} from '@react-navigation/native';
 import {AuthProvider, useAuth} from '../services/context/auth';
 
+import RNBootSplash from 'react-native-bootsplash';
+
 const RootStack = () => {
   const Stack = createNativeStackNavigator();
   const {authData} = useAuth();
@@ -25,7 +27,7 @@ const RootStack = () => {
 const Router = () => {
   return (
     <AuthProvider>
-      <NavigationContainer>
+      <NavigationContainer onReady={() => RNBootSplash.hide()}>
         <RootStack />
       </NavigationContainer>
     </AuthProvider>
