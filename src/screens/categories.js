@@ -46,11 +46,9 @@ export const CompanyCategories = ({route}) => {
   }
 
   function CategoriesListView() {
-    const categoryQuantity = 10;
-
     const getCategoryQuantity = category => {
       let products = getCompanyCategoriesProducts(category, companyName);
-      return products.reduce((acc, el) => el.stock + acc, 0);
+      return products.length;
     };
     return (
       <View style={styles.container}>

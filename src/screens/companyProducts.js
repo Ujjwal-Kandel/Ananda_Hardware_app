@@ -7,7 +7,14 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {Icon, Card, Input, Spinner} from '@ui-kitten/components';
+import {
+  Card,
+  Input,
+  Divider,
+  TabView,
+  Tab,
+  Layout,
+} from '@ui-kitten/components';
 import {useNavigation} from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 import {
@@ -24,6 +31,7 @@ LogBox.ignoreLogs([
 
 import {getAllProducts} from '../database/realm';
 import {NoSearchResults} from '../components/nosearchresults';
+import ListProduct from '../components/CompanyProductScreen/ListProduct';
 
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
@@ -33,8 +41,8 @@ export const Products = ({route}) => {
   const [viewType, setViewType] = useState('grid');
   const [searchProduct, setSearchProduct] = useState(null);
   const navigation = useNavigation();
-  const [companyName, setCompanyName] = useState(props.companyName);
-  const [category, setCategoryName] = useState(props.category);
+  const companyName = props.companyName;
+  const category = props.category;
   const isMounted = useRef(null);
   const CompanyProducts = useCallback(() => {
     return getAllProducts().filtered(
@@ -45,9 +53,24 @@ export const Products = ({route}) => {
   }, [category, companyName]);
 
   const [data, setData] = useState(CompanyProducts());
+  const HeaderTitle = useCallback(
+    () => (
+      <TextTicker
+        style={styles.headerTextTickerStyle}
+        duration={4000}
+        loop
+        bounce
+        repeatSpacer={50}
+        marqueeDelay={1000}>
+        {`${companyName} - ${capitalize(category)}`}
+      </TextTicker>
+    ),
+    [companyName, category],
+  );
   useEffect(() => {
-    navigation.setOptions({title: companyName + ' - ' + capitalize(category)});
-  }, [category, companyName, navigation]);
+    navigation.setOptions({headerTitle: () => <HeaderTitle />});
+  }, [navigation, HeaderTitle]);
+
   useEffect(() => {
     isMounted.current = true;
     if (isMounted) {
@@ -71,57 +94,53 @@ export const Products = ({route}) => {
     setData(CompanyProducts().filter(item => filter(item.pname, query)));
   };
 
+  const gridItems = ({item, index}) => {
+    return (
+      <Card
+        onPress={() => {
+          navigation.navigate('Details', {
+            code: item.code,
+          });
+        }}
+        style={styles.card}
+        status={item.stock <= 5 ? 'danger' : 'success'}>
+        <Image style={styles.gridImage} source={{uri: item.image[0]}} />
+        <Divider />
+        <TextTicker
+          style={[styles.namecode]}
+          duration={4000}
+          loop
+          bounce
+          repeatSpacer={50}
+          marqueeDelay={1000}>
+          {item.pname}
+        </TextTicker>
+        <Text style={styles.price}> Rs: {item.price} </Text>
+      </Card>
+    );
+  };
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const shouldLoadComponent = index => index === selectedIndex;
+
   function ListView() {
-    {
-      if (viewType === 'grid') {
-        return (
+    return (
+      <TabView
+        selectedIndex={selectedIndex}
+        shouldLoadComponent={shouldLoadComponent}
+        onSelect={index => setSelectedIndex(index)}>
+        <Tab title="Grid">
           <View style={styles.rectangle40}>
             <FlatList
               numColumns={2}
               data={data}
-              keyExtractor={(item, index) => index.toString()}
+              keyExtractor={(_, index) => index.toString()}
               ListFooterComponent={<View style={{height: hp('30%')}} />}
-              renderItem={({item, index}) => {
-                return (
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      flex: 1,
-                    }}>
-                    <Card
-                      onPress={() => {
-                        navigation.navigate('Details', {
-                          code: item.code,
-                        });
-                      }}
-                      style={styles.card}
-                      status={item.stock <= 5 ? 'danger' : 'success'}>
-                      <Image
-                        style={styles.image1}
-                        source={{uri: item.image[0]}}
-                      />
-                      <View style={{flexDirection: 'column'}}>
-                        <TextTicker
-                          style={[styles.namecode]}
-                          duration={4000}
-                          loop
-                          bounce
-                          repeatSpacer={50}
-                          marqueeDelay={1000}>
-                          {item.pname}
-                        </TextTicker>
-                        <Text style={styles.price}> Rs: {item.price} </Text>
-                      </View>
-                    </Card>
-                  </View>
-                );
-              }}
+              renderItem={gridItems}
             />
           </View>
-        );
-      } else {
-        return (
+        </Tab>
+        <Tab title="List">
           <View>
             <View style={{padding: hp('1%')}} />
             <FlatList
@@ -130,40 +149,21 @@ export const Products = ({route}) => {
               ListFooterComponent={<View style={{height: hp('50%')}} />}
               renderItem={({item, index}) => {
                 return (
-                  <View
-                    style={{
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Card
-                      onPress={() =>
-                        navigation.navigate('Details', {
-                          code: item.code,
-                        })
-                      }
-                      style={styles.card1}
-                      status={item.stock <= 5 ? 'danger' : 'success'}>
-                      <TextTicker
-                        style={[styles.namecode1]}
-                        duration={4000}
-                        loop
-                        bounce
-                        repeatSpacer={50}
-                        marqueeDelay={1000}>
-                        {item.pname}
-                      </TextTicker>
-                      <View style={{padding: 13}} />
-                      <Text style={styles.namecode1}>{item.category}</Text>
-                      <Text style={styles.price1}> Rs: {item.price} </Text>
-                    </Card>
-                  </View>
+                  <ListProduct
+                    item={item}
+                    onPress={() =>
+                      navigation.navigate('Details', {
+                        code: item.code,
+                      })
+                    }
+                  />
                 );
               }}
             />
           </View>
-        );
-      }
-    }
+        </Tab>
+      </TabView>
+    );
   }
 
   return (
@@ -173,55 +173,30 @@ export const Products = ({route}) => {
         value={searchProduct}
         onChangeText={onChangeText}
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-evenly',
-        }}>
-        <Text style={styles.header}>{companyName}</Text>
-        <SwitchSelector
-          style={{
-            alignSelf: 'flex-end',
-            marginRight: 10,
-            width: wp('30%'),
-            fontFamily: 'Lato-Regular',
-            marginVertical: 10,
-          }}
-          textColor="#FF4E2B"
-          selectedColor="#69DD3B"
-          buttonColor="#dde1eb"
-          hasPadding
-          options={[
-            {label: 'grid', value: 'grid'},
-            {label: 'list', value: 'list'},
-          ]}
-          initial={0}
-          onPress={value => setViewType(value)}
-        />
-      </View>
-      {data == 0 ? <NoSearchResults /> : <ListView />}
+      <Divider style={styles.dividerStyles} />
+
+      {data === 0 ? <NoSearchResults /> : <ListView />}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  headerTextTickerStyle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  dividerStyles: {
+    paddingBottom: 10,
+  },
   button: {
     alignItems: 'center',
     marginTop: 50,
   },
   card: {
     margin: 2,
-    marginTop: '10%',
+    marginTop: '5%',
     width: wp('45%'),
     marginLeft: '2%',
-  },
-  card1: {
-    backgroundColor: '#F5E5DA',
-    width: wp('92%'),
-    height: hp('13%'),
-    marginLeft: 15,
-    margin: 2,
   },
   header: {
     fontWeight: 'bold',
@@ -235,21 +210,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
-  image1: {
+  gridImage: {
     flex: 1,
     width: wp('33%'),
     height: hp('20%'),
     resizeMode: 'contain',
-    // marginLeft: 30,
-    // marginTop: 55,
-    // borderRadius: 30,
   },
   namecode: {
     fontFamily: 'Lato-Regular',
     color: '#191919',
     fontSize: 12,
     fontWeight: '400',
-    marginLeft: 0,
+    marginTop: 4,
     width: wp('100%'),
   },
   price: {
@@ -257,40 +229,12 @@ const styles = StyleSheet.create({
     color: '#191919',
     fontSize: 12,
     fontWeight: '400',
-    marginLeft: '10%',
+    textAlign: 'left',
     width: 150,
   },
-  text1: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 17,
-    fontWeight: '400',
-  },
-  price1: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 18,
-    fontWeight: '400',
-    marginTop: 65,
-    position: 'absolute',
-    marginLeft: 266,
-    width: 150,
-  },
-  namecode1: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 18,
-    fontWeight: '400',
-    marginLeft: 0,
-  },
-  buttonStyle: {
+  tabContainer: {
+    height: 64,
     alignItems: 'center',
-    backgroundColor: '#F92660',
-    width: 150,
-    height: 50,
-    marginTop: 20,
-    marginBottom: 10,
-    marginRight: 15,
-    padding: 5,
+    justifyContent: 'center',
   },
 });
