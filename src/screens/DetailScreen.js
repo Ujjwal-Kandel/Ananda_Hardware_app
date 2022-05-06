@@ -13,14 +13,8 @@ import {useNavigation} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import {LogBox} from 'react-native';
 
-import {useSelector, useDispatch} from 'react-redux';
-import {
-  addToCart,
-  selectCartItemByCode,
-  selectCartItemCount,
-} from '../slices/cartSlice';
-import {useTheme, Text, Icon, Button} from '@ui-kitten/components';
-import AddToCart from './DetailScreen/AddToCart';
+import {Text} from '@ui-kitten/components';
+import AddToCart from '../components/DetailScreen/AddToCart';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',

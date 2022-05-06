@@ -1,19 +1,9 @@
 // SHOWS THE RESULT FROM QR-Scanner
 
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Text,
-  FlatList,
-} from 'react-native';
-import {
-  Card,
-} from '@ui-kitten/components';
-import {
-  getAllProducts,
-} from '../database/realm';
+import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
+import {Card} from '@ui-kitten/components';
+import {getAllProducts} from '../database/realm';
 import {useNavigation} from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 import {

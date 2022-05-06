@@ -6,7 +6,7 @@ import TextTicker from 'react-native-text-ticker';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 
 import {capitalize} from 'lodash';
-import {ProductQuantityIcon} from '../../screens/browse';
+import {ProductQuantityIcon} from '../../screens/CompaniesScreen';
 import {getAllProducts} from '../../database/realm';
 
 const ListProduct = ({item, isResultPage, onPress}) => {

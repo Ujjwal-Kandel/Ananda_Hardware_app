@@ -14,7 +14,7 @@ import {
 } from 'react-native-responsive-screen';
 import {capitalize} from 'lodash';
 import {NoSearchResults} from '../components/nosearchresults';
-import {ProductQuantityIcon} from './browse';
+import {ProductQuantityIcon} from './CompaniesScreen';
 import TextTicker from 'react-native-text-ticker';
 
 const filter = (item, query) =>
@@ -28,13 +28,13 @@ export const CompanyCategories = ({route}) => {
 
   const navigation = useNavigation();
 
-  const onSelect = index => {
-    setSearchCategory();
-    navigation.navigate('Products', {
-      companyName: companyName,
-      category: data[index],
-    });
-  };
+  // const onSelect = index => {
+  //   setSearchCategory();
+  //   navigation.navigate('Products', {
+  //     companyName: companyName,
+  //     category: data[index],
+  //   });
+  // };
 
   const onChangeText = query => {
     setSearchCategory(query);
@@ -106,8 +106,8 @@ export const CompanyCategories = ({route}) => {
 const styles = StyleSheet.create({
   card: {
     margin: 2,
-    marginTop: '5%',
-    height: hp('8%'),
+    marginTop: '2%',
+    height: hp('10%'),
     marginLeft: '2%',
   },
   cardText: {

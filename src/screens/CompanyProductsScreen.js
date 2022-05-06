@@ -130,7 +130,7 @@ export const Products = ({route}) => {
         shouldLoadComponent={shouldLoadComponent}
         onSelect={index => setSelectedIndex(index)}>
         <Tab title="Grid">
-          <View style={styles.rectangle40}>
+          <View style={styles.gridContainer}>
             <FlatList
               numColumns={2}
               data={data}
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   card: {
     margin: 2,
-    marginTop: '5%',
+    marginTop: '2%',
     width: wp('45%'),
     marginLeft: '2%',
   },
@@ -204,11 +204,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Regular',
     width: wp('50%'),
   },
-  rectangle40: {
+  gridContainer: {
     position: 'relative',
     width: '95%',
     alignSelf: 'center',
-    marginBottom: 20,
+    paddingTop: 10,
   },
   gridImage: {
     flex: 1,

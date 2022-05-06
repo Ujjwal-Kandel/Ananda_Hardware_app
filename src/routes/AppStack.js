@@ -13,18 +13,18 @@ import {
 } from '@ui-kitten/components';
 // component
 import Cart from '../components/CartScreen/Cart';
-import ResultComponent from '../screens/resultComponent';
-import {DetailScreen} from '../components/detailScreen';
-import {Products} from '../screens/companyProducts';
-import {CompanyCategories} from '../screens/categories';
-import CartScreen from '../screens/CartScreen';
+import ResultComponent from '../screens/ResultScreen';
+import {Products} from '../screens/CompanyProductsScreen';
+import {CompanyCategories} from '../screens/CategoriesScreen';
 import {getAllProducts} from '../database/realm';
-import SearchRes from '../screens/searchRes';
-import ScanScreen from '../screens/qr';
 // screen
-import Home from '../screens/home';
-import Browse from '../screens/browse';
-import Sync from '../screens/sync';
+import {DetailScreen} from '../screens/DetailScreen';
+import Home from '../screens/HomeScreen';
+import CartScreen from '../screens/CartScreen';
+import SearchRes from '../screens/SearchResultScreen';
+import ScanScreen from '../screens/ScanScreen';
+import Browse from '../screens/CompaniesScreen';
+import Sync from '../screens/SyncScreen';
 
 const Tab = createBottomTabNavigator();
 
