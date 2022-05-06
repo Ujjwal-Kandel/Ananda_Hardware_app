@@ -29,7 +29,6 @@ function LoginScreen({navigation, route}) {
           pointerEvents="auto"
           style={[styles.container, styles.KeyboardAvoidingViewWrapper]}>
           <View style={styles.dividor} />
-          <Text style={styles.titleText}>Login</Text>
           <View style={styles.authForm}>
             <Input
               style={styles.inputField}
@@ -69,16 +68,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   KeyboardAvoidingViewWrapper: {
-    justifyContent: 'flex-start',
     width: '100%',
   },
   dividor: {
     paddingTop: 5,
   },
   authForm: {
-    flex: 1,
-    width: '70%',
-    marginTop: '30%',
+    width: '90%',
   },
   inputField: {
     color: '#000',

@@ -1,5 +1,4 @@
 import React from 'react';
-import {View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {Text} from '@ui-kitten/components';
@@ -18,7 +17,7 @@ function AuthStack() {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{headerTitle: 'Welcome'}}
+        options={{headerTitle: () => <Text category="h4">Login</Text>}}
       />
     </Stack.Navigator>
   );
