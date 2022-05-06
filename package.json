@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "generate": "npx react-native generate-bootsplash ./src/assets/original_icon.png --background-color=2EE59D   --logo-width=100 --assets-path=./src/assets --flavor=main"
   },
   "dependencies": {
     "@eva-design/eva": "^2.1.1",
@@ -22,6 +23,7 @@
     "axios": "^0.27.2",
     "react": "17.0.2",
     "react-native": "0.68.1",
+    "react-native-bootsplash": "^4.1.5",
     "react-native-camera": "^4.2.1",
     "react-native-paper": "^4.12.1",
     "react-native-permissions": "^3.3.1",

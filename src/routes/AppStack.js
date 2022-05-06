@@ -25,7 +25,6 @@ import ScanScreen from '../screens/qr';
 import Home from '../screens/home';
 import Browse from '../screens/browse';
 import Sync from '../screens/sync';
-import TextTicker from 'react-native-text-ticker';
 
 const Tab = createBottomTabNavigator();
 
@@ -89,14 +88,14 @@ const AppStack = () => {
 
   return (
     <Stack.Navigator
-      initialRouteName="tabs"
+      initialRouteName="Tabs"
       screenOptions={{
         headerRight: () => <Cart />,
       }}>
       <Stack.Screen name="Result" component={SearchRes} />
       <Stack.Screen
         options={{headerShown: false}}
-        name="tabs"
+        name="Tabs"
         component={TabNavigator}
       />
       <Stack.Screen name="Search Result" component={ResultComponent} />
