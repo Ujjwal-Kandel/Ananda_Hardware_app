@@ -52,7 +52,6 @@ export default function Sync() {
     combinedFunc();
     setVisible(true);
   };
-  const {signOut} = useAuth();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,14 +88,6 @@ export default function Sync() {
             </View>
           </Card>
         </Modal>
-      </View>
-      <View style={styles.logoutButtonWrapper}>
-        <WideButton
-          onPress={signOut}
-          text="Logout"
-          size="small"
-          accessoryLeft={<Icon name="log-out-outline" />}
-        />
       </View>
     </SafeAreaView>
   );

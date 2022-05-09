@@ -8,6 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   BottomNavigation,
   BottomNavigationTab,
+  Button,
   Icon,
   Text,
 } from '@ui-kitten/components';
@@ -26,6 +27,8 @@ import ScanScreen from '../screens/ScanScreen';
 import Browse from '../screens/CompaniesScreen';
 import Sync from '../screens/SyncScreen';
 import BrowseStackScreen from '../screens/BrowseStackScreen';
+import WideButton from '../components/common/WideButton';
+import {useAuth} from '../services/context/auth';
 
 const Tab = createBottomTabNavigator();
 
@@ -57,6 +60,7 @@ const BottomTabBar = ({navigation, state}) => (
 );
 
 const TabNavigator = () => {
+  const {signOut} = useAuth();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -83,7 +87,20 @@ const TabNavigator = () => {
         options={{headerShown: false}}
         component={BrowseStackScreen}
       />
-      <Tab.Screen name="Settings" component={Sync} />
+      <Tab.Screen
+        name="Settings"
+        component={Sync}
+        options={{
+          headerRight: () => (
+            <Button
+              appearance={'ghost'}
+              onPress={signOut}
+              accessoryRight={<Icon name="log-out-outline" />}>
+              Logout
+            </Button>
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };

@@ -10,6 +10,7 @@ function WideButton({
   disabled = false,
   textColor,
   accessoryLeft,
+  accessoryRight,
   isSubmitting,
   isLoading = false,
   extraStyle,
@@ -24,7 +25,8 @@ function WideButton({
       disabled={disabled}
       onPress={onPress}
       size={size}
-      style={[styles.button(disabled, bgcolor, theme, width), extraStyle]}>
+      style={[styles.button(disabled, bgcolor, theme, width), extraStyle]}
+      accessoryRight={accessoryRight}>
       {!isLoading ? (
         evaProps => (
           <Text
