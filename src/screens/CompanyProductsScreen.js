@@ -2,28 +2,27 @@ import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   StyleSheet,
   View,
-  SafeAreaView,
   Text,
   FlatList,
   Image,
+  Dimensions,
 } from 'react-native';
+import {Card, Input, Divider, TabView, Tab} from '@ui-kitten/components';
 import {
-  Card,
-  Input,
-  Divider,
-  TabView,
-  Tab,
-  Layout,
-} from '@ui-kitten/components';
-import {useNavigation} from '@react-navigation/native';
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+  useNavigationState,
+} from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import SwitchSelector from 'react-native-switch-selector';
 import {capitalize} from 'lodash';
 import {LogBox} from 'react-native';
+
+import defaultImage from '../assets/original_icon.png';
 
 LogBox.ignoreLogs([
   'react-native-text-ticker: could not calculate metrics nodehandle_not_found',
@@ -36,34 +35,70 @@ import ListProduct from '../components/CompanyProductScreen/ListProduct';
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
 
-export const Products = ({route}) => {
-  const props = route.params;
-  const [viewType, setViewType] = useState('grid');
-  const [searchProduct, setSearchProduct] = useState(null);
+const {height, width} = Dimensions.get('window');
+
+export function ListTypeSeparator() {
+  return <View style={{margin: 1}} />;
+}
+
+export const Products = () => {
+  const route = useRoute();
   const navigation = useNavigation();
+  const previousRoute = useNavigationState(state => state.routes);
+
+  const props = route.params;
+  const [searchProduct, setSearchProduct] = useState(null);
   const companyName = props.companyName;
   const category = props.category;
-  const isMounted = useRef(null);
+  const isMounted = useRef({
+    companyName: '',
+    category: '',
+    mounted: false,
+  });
+
+  useEffect(() => {
+    isMounted.current.category = props.category;
+    isMounted.current.companyName = props.companyName;
+  }, [props]);
+
   const CompanyProducts = useCallback(() => {
     return getAllProducts().filtered(
       'category == $0 && cname == $1',
-      category,
-      String(companyName).toUpperCase(),
+      isMounted.current.category,
+      String(isMounted.current.companyName).toUpperCase(),
     );
   }, [category, companyName]);
 
   const [data, setData] = useState(CompanyProducts());
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log({previousRoute});
+      setData(() => {
+        console.log('eta...........');
+        return getAllProducts().filtered(
+          'category == $0 && cname == $1',
+          isMounted.current.category,
+          String(isMounted.current.companyName).toUpperCase(),
+        );
+      });
+    }),
+    [route.params],
+  );
+
   const HeaderTitle = useCallback(
     () => (
-      <TextTicker
-        style={styles.headerTextTickerStyle}
-        duration={4000}
-        loop
-        bounce
-        repeatSpacer={50}
-        marqueeDelay={1000}>
-        {`${companyName} - ${capitalize(category)}`}
-      </TextTicker>
+      <View style={{marginRight: 100}}>
+        <TextTicker
+          style={styles.headerTextTickerStyle}
+          duration={4000}
+          loop
+          bounce
+          repeatSpacer={50}
+          marqueeDelay={1000}>
+          {`${companyName} - ${capitalize(category)}`}
+        </TextTicker>
+      </View>
     ),
     [companyName, category],
   );
@@ -72,8 +107,8 @@ export const Products = ({route}) => {
   }, [navigation, HeaderTitle]);
 
   useEffect(() => {
-    isMounted.current = true;
-    if (isMounted) {
+    isMounted.current.mounted = true;
+    if (isMounted.current.mounted) {
       if (searchProduct) {
         let filteredData = CompanyProducts().filter(item =>
           filter(item.pname, searchProduct),
@@ -84,10 +119,9 @@ export const Products = ({route}) => {
       }
     }
     return () => {
-      isMounted.current = false;
+      isMounted.current.mounted = false;
     };
   }, [searchProduct, CompanyProducts]);
-  // const [data1, setData] = useState(getPname(companyName, category));
 
   const onChangeText = query => {
     setSearchProduct(query);
@@ -126,57 +160,53 @@ export const Products = ({route}) => {
   function ListView() {
     return (
       <TabView
+        style={{flex: 1}}
         selectedIndex={selectedIndex}
         shouldLoadComponent={shouldLoadComponent}
         onSelect={index => setSelectedIndex(index)}>
         <Tab title="Grid">
-          <View style={styles.gridContainer}>
-            <FlatList
-              numColumns={2}
-              data={data}
-              keyExtractor={(_, index) => index.toString()}
-              ListFooterComponent={<View style={{height: hp('30%')}} />}
-              renderItem={gridItems}
-            />
-          </View>
+          <FlatList
+            numColumns={2}
+            data={data}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={gridItems}
+          />
         </Tab>
         <Tab title="List">
-          <View>
-            <View style={{padding: hp('1%')}} />
-            <FlatList
-              data={data}
-              keyExtractor={(item, index) => index.toString()}
-              ListFooterComponent={<View style={{height: hp('50%')}} />}
-              renderItem={({item, index}) => {
-                return (
-                  <ListProduct
-                    item={item}
-                    onPress={() =>
-                      navigation.navigate('Details', {
-                        code: item.code,
-                      })
-                    }
-                  />
-                );
-              }}
-            />
-          </View>
+          <FlatList
+            data={data}
+            keyExtractor={(item, index) => index.toString()}
+            ItemSeparatorComponent={ListTypeSeparator}
+            ListFooterComponent={ListTypeSeparator}
+            renderItem={({item, index}) => {
+              return (
+                <ListProduct
+                  item={item}
+                  onPress={() =>
+                    navigation.navigate('Details', {
+                      code: item.code,
+                    })
+                  }
+                />
+              );
+            }}
+          />
         </Tab>
       </TabView>
     );
   }
 
   return (
-    <SafeAreaView>
+    <>
       <Input
+        style={{marginTop: 5}}
         placeholder="Product name"
         value={searchProduct}
         onChangeText={onChangeText}
       />
-      <Divider style={styles.dividerStyles} />
-
+      <View style={{marginTop: 5}} />
       {data === 0 ? <NoSearchResults /> : <ListView />}
-    </SafeAreaView>
+    </>
   );
 };
 
@@ -194,9 +224,9 @@ const styles = StyleSheet.create({
   },
   card: {
     margin: 2,
-    marginTop: '2%',
-    width: wp('45%'),
-    marginLeft: '2%',
+    // marginTop: '2%',
+    width: width / 2,
+    // marginLeft: '2%',
   },
   header: {
     fontWeight: 'bold',
@@ -206,9 +236,9 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     position: 'relative',
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
-    paddingTop: 10,
+    paddingTop: 5,
   },
   gridImage: {
     flex: 1,

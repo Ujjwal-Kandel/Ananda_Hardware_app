@@ -18,10 +18,12 @@ import {
   decrementQuantity,
   removeFromCart,
   resetCart,
+  placeOrder,
+  resetPlaceOrderState,
 } from '../../slices/cartSlice';
+import {useNavigation} from '@react-navigation/core';
 
 const CartItem = ({cartItem, handleChange}) => {
-  console.log(cartItem.product.image[0]);
   return (
     <View style={styles.rowFlexContainer}>
       <Image
@@ -101,6 +103,7 @@ const CartItem = ({cartItem, handleChange}) => {
 const CartList = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const navigation = useNavigation();
 
   const cartItemsFromRedux = useSelector(state => selectCartItems(state));
   const [isCartEmpty, setIsCartEmpty] = useState(true);
@@ -133,7 +136,6 @@ const CartList = () => {
   );
 
   const handleChange = (changeType, id) => {
-    console.log('product id: ', id);
     const payload = {
       id: id,
     };
@@ -170,9 +172,9 @@ const CartList = () => {
         <Button
           style={{flex: 1}}
           onPress={() => {
-            dispatch(resetCart());
+            dispatch(placeOrder());
           }}>
-          Reset
+          Place Order
         </Button>
         <View
           style={{

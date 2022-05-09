@@ -62,9 +62,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   cardStyles: {
-    width: wp('92%'),
-    marginLeft: 15,
-    margin: 2,
+    marginHorizontal: 3,
   },
   companyNameTextStyles: {
     fontFamily: 'Lato-Regular',

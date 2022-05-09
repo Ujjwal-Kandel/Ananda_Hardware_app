@@ -1,6 +1,6 @@
 // SHOWS THE RESULT FROM SEARCH
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {getAllProducts} from '../database/realm';
-import {useNavigation} from '@react-navigation/native';
+import {
+  useNavigation,
+  useRoute,
+  useNavigationState,
+} from '@react-navigation/native';
 import Swiper from 'react-native-swiper';
 import {LogBox} from 'react-native';
 
@@ -20,18 +24,32 @@ LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
 ]);
 
-export const DetailScreen = ({route}) => {
+export const DetailScreen = () => {
+  const route = useRoute();
   const navigation = useNavigation();
+  const previousRoute = useNavigationState(state => state.routes);
+  const isMounted = useRef({
+    code: '',
+  });
   let props = route.params;
 
   const [product, setProduct] = useState(
     getAllProducts().filtered('code==$0', props.code)[0],
   );
-  console.log(route.params.code, product);
 
   useEffect(() => {
     navigation.setOptions({title: product.pname});
   }, []);
+
+  useEffect(() => {
+    isMounted.current.code = props.code;
+  }, [props]);
+
+  useEffect(() => {
+    setProduct(() => {
+      return getAllProducts().filtered('code=$0', isMounted.current.code)[0];
+    });
+  }, [route]);
 
   const imageList = product.image;
 

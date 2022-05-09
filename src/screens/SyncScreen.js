@@ -28,7 +28,7 @@ export default function Sync() {
   let combinedFunc = async () => {
     setIsLoading(true);
     try {
-      deleteAllProduct();
+      // deleteAllProduct();
       await syncData();
       await syncCompany();
       setIsLoading(false);

@@ -16,6 +16,7 @@ import {capitalize} from 'lodash';
 import {NoSearchResults} from '../components/nosearchresults';
 import {ProductQuantityIcon} from './CompaniesScreen';
 import TextTicker from 'react-native-text-ticker';
+import {ListTypeSeparator} from './CompanyProductsScreen';
 
 const filter = (item, query) =>
   item.toLowerCase().startsWith(query.toLowerCase());
@@ -27,14 +28,6 @@ export const CompanyCategories = ({route}) => {
   const [data, setData] = useState(getCategories());
 
   const navigation = useNavigation();
-
-  // const onSelect = index => {
-  //   setSearchCategory();
-  //   navigation.navigate('Products', {
-  //     companyName: companyName,
-  //     category: data[index],
-  //   });
-  // };
 
   const onChangeText = query => {
     setSearchCategory(query);
@@ -51,48 +44,47 @@ export const CompanyCategories = ({route}) => {
       return products.length;
     };
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={data}
-          keyExtractor={(item, index) => index.toString()}
-          ListFooterComponent={<View style={{height: hp('30%')}} />}
-          renderItem={({item, index}) => {
-            return (
-              <MenuItem
-                style={styles.card}
-                onPress={() =>
-                  navigation.navigate('Products', {
-                    companyName: companyName,
-                    category: item,
-                  })
-                }
-                title={() => (
-                  <View style={styles.cardTextContainer}>
-                    <TextTicker
-                      duration={4000}
-                      loop
-                      bounce
-                      repeatSpacer={50}
-                      marqueeDelay={1000}>
-                      {item}
-                    </TextTicker>
-                  </View>
-                )}
-                accessoryRight={() => {
-                  return (
-                    <ProductQuantityIcon quantity={getCategoryQuantity(item)} />
-                  );
-                }}
-              />
-            );
-          }}
-        />
-      </View>
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => index.toString()}
+        ListFooterComponent={ListTypeSeparator}
+        ItemSeparatorComponent={ListTypeSeparator}
+        renderItem={({item, index}) => {
+          return (
+            <MenuItem
+              style={styles.card}
+              onPress={() =>
+                navigation.navigate('Products', {
+                  companyName: companyName,
+                  category: item,
+                })
+              }
+              title={() => (
+                <View style={styles.cardTextContainer}>
+                  <TextTicker
+                    duration={4000}
+                    loop
+                    bounce
+                    repeatSpacer={50}
+                    marqueeDelay={1000}>
+                    {item}
+                  </TextTicker>
+                </View>
+              )}
+              accessoryRight={() => {
+                return (
+                  <ProductQuantityIcon quantity={getCategoryQuantity(item)} />
+                );
+              }}
+            />
+          );
+        }}
+      />
     );
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <Input
         placeholder="Category name"
         value={searchCategory}
@@ -105,10 +97,7 @@ export const CompanyCategories = ({route}) => {
 
 const styles = StyleSheet.create({
   card: {
-    margin: 2,
-    marginTop: '2%',
     height: hp('10%'),
-    marginLeft: '2%',
   },
   cardText: {
     fontFamily: 'Lato-Regular',
@@ -124,9 +113,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   container: {
-    position: 'relative',
-    width: wp('95%'),
-    borderRadius: 15,
-    marginLeft: '2%',
+    // width: '100%',
+    // borderRadius: 15,
+    // marginLeft: '2%',
+    flex: 1,
   },
 });

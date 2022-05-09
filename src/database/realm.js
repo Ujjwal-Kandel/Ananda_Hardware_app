@@ -111,13 +111,24 @@ let deleteAllProduct = () => {
   });
 };
 
+let updateOnOrderPlaced = products => {
+  const idsQuery = products.map(product => `id = ${product.id}`).join(' OR ');
+  realm.write(() => {
+    for (const product of realm.objects('Product').filtered(`(${idsQuery})`)) {
+      console.log({product});
+      console.log('productid', product.id, typeof product.id);
+      const quantity = products.filter(p => p.id === product.id)[0].quantity;
+      product.stock -= quantity;
+    }
+  });
+};
+
 let syncData = async () => {
   try {
     const {data} = await axios.get('/api/products');
-    console.log({data});
     realm.write(() => {
       data?.data.products.forEach(obj => {
-        realm.create(Product, obj);
+        realm.create(Product, obj, 'modified');
       });
     });
   } catch (err) {
@@ -131,7 +142,7 @@ let syncCompany = async () => {
     const {data} = await axios.get('/api/companies');
     realm.write(() => {
       data?.data.companies.forEach(obj => {
-        realm.create(Company, obj);
+        realm.create(Company, obj, 'modified');
       });
     });
   } catch (err) {
@@ -151,4 +162,5 @@ export {
   getPname,
   getCompanyCategories,
   getCompanyCategoriesProducts,
+  updateOnOrderPlaced,
 };

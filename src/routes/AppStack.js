@@ -25,6 +25,7 @@ import SearchRes from '../screens/SearchResultScreen';
 import ScanScreen from '../screens/ScanScreen';
 import Browse from '../screens/CompaniesScreen';
 import Sync from '../screens/SyncScreen';
+import BrowseStackScreen from '../screens/BrowseStackScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -77,7 +78,11 @@ const TabNavigator = () => {
         component={Home}
       />
       <Tab.Screen name="Scan" component={ScanScreen} />
-      <Tab.Screen name="Browse Companies" component={Browse} />
+      <Tab.Screen
+        name="BrowseStackScreen"
+        options={{headerShown: false}}
+        component={BrowseStackScreen}
+      />
       <Tab.Screen name="Settings" component={Sync} />
     </Tab.Navigator>
   );
@@ -100,8 +105,8 @@ const AppStack = () => {
       />
       <Stack.Screen name="Search Result" component={ResultComponent} />
       <Stack.Screen name="Details" component={DetailScreen} />
-      <Stack.Screen component={Products} name="Products" />
-      <Stack.Screen name="Categories" component={CompanyCategories} />
+      {/* <Stack.Screen component={Products} name="Products" /> */}
+      {/* <Stack.Screen name="Categories" component={CompanyCategories} /> */}
       <Stack.Screen
         name="Cart"
         component={CartScreen}

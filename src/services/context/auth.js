@@ -36,8 +36,6 @@ function AuthProvider({children}) {
         } else {
           setAuthData(_authData);
           setAuthToken(_authData.token);
-          // print jwt to use in Swagger
-          console.log(_authData);
         }
       }
     } catch (error) {

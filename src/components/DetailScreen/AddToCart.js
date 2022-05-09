@@ -53,8 +53,12 @@ const AddToCart = ({product}) => {
     (cartQuantity ? cartQuantity + itemCount > product.stock - 1 : false);
   return (
     <View style={styles.addToCartContainer(theme)}>
-      <View style={styles.cartItemCountContainer}>
+      <View style={styles.container}>
         <TouchableOpacity
+          style={[
+            styles.elementContainer,
+            {backgroundColor: theme['color-basic-200']},
+          ]}
           onPress={() => {
             decrementHandler();
           }}>
@@ -64,10 +68,18 @@ const AddToCart = ({product}) => {
             fill={theme['color-basic-1100']}
           />
         </TouchableOpacity>
-        <View>
+        <View style={[styles.elementContainer, {flex: 0.75}]}>
           <Text category="h5">{itemCount}</Text>
         </View>
         <TouchableOpacity
+          style={[
+            styles.elementContainer,
+            {
+              backgroundColor: isAddToCartIncrementorDisabled
+                ? theme['color-danger-300']
+                : theme['color-basic-200'],
+            },
+          ]}
           onPress={() => {
             incrementHandler();
           }}
@@ -80,6 +92,7 @@ const AddToCart = ({product}) => {
         </TouchableOpacity>
       </View>
       <Button
+        size="medium"
         onPress={() => {
           addItemToCart();
           setItemCount(1);
@@ -96,19 +109,27 @@ export default AddToCart;
 const styles = StyleSheet.create({
   addToCartContainer: theme => ({
     marginTop: 'auto',
+    alignItems: 'center',
     backgroundColor: theme['color-basic-100'],
     flexDirection: 'row',
     padding: 10,
   }),
-  cartItemCountContainer: {
+  container: {
     flexDirection: 'row',
     flex: 1,
+    height: 45,
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginRight: '5%',
     borderWidth: 0.75,
     borderColor: '#ccc',
     borderRadius: 2,
+  },
+  elementContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
   },
   iconSize: {
     width: 18,

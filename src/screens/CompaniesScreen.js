@@ -52,7 +52,7 @@ export default function Browse() {
         <FlatList
           data={data}
           keyExtractor={(item, index) => index.toString()}
-          ListFooterComponent={<View style={{height: hp('30%')}} />}
+          // ListFooterComponent={<View style={{height: hp('30%')}} />}
           renderItem={({item, index}) => {
             return (
               <MenuItem

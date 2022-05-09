@@ -1,9 +1,37 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import {updateOnOrderPlaced} from '../database/realm';
+import axios from '../services/httpService';
+
+export const placeOrder = createAsyncThunk(
+  '/cart/placeOrder',
+  async (args, {getState}) => {
+    try {
+      const {cartItems} = getState().cart;
+      const payload = cartItems.map(item => ({
+        id: item.product.id,
+        quantity: item.quantity,
+      }));
+      const {data} = await axios.post('/api/deduct-stock', {
+        data: {
+          products: payload,
+        },
+      });
+      if (data) {
+        console.log({data});
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+);
 
 const initialState = {
   cartItems: [],
   status: 'idle',
   error: null,
+  placeOrderStatus: 'idle',
 };
 
 const getProductIndex = (state, idToFind) => {
@@ -27,13 +55,11 @@ export const cartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-      console.log('payload', action.payload);
       state.cartItems = state.cartItems.filter(
         item => item.product.id !== action.payload.id,
       );
     },
     incrementQuantity: (state, action) => {
-      console.log('payload', action.payload);
       const productIndex = getProductIndex(state, action.payload.id);
       if (productIndex >= 0) {
         state.cartItems[productIndex].quantity += 1;
@@ -52,6 +78,28 @@ export const cartSlice = createSlice({
       }
     },
     resetCart: (state, action) => initialState,
+    resetPlaceOrderState: (state, action) => {
+      state.placeOrderStatus = 'idle';
+    }
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(placeOrder.pending, (state, action) => {
+        state.status = 'loading';
+      })
+      .addCase(placeOrder.fulfilled, (state, action) => {
+        console.log('placed');
+        const cartItems = state.cartItems.map(cartItem => ({
+          id: cartItem.product.id,
+          quantity: cartItem.quantity,
+        }));
+        updateOnOrderPlaced(cartItems);
+        state.cartItems = [];
+        state.placeOrderStatus = 'success';
+      })
+      .addCase(placeOrder.rejected, (state, action) => {
+        console.log('rejected');
+      });
   },
 });
 
@@ -87,4 +135,5 @@ export const {
   incrementQuantity,
   decrementQuantity,
   resetCart,
+  resetPlaceOrderState
 } = cartSlice.actions;
