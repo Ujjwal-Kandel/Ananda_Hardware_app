@@ -76,11 +76,17 @@ export default function Home(props) {
       <Pressable
         onPress={() => {
           setShowAutoComplete(false);
-          setProductName('');
-          if (productSearchRef.current) {
-            productSearchRef.current.blur();
-            productSearchRef.current.focus();
+
+          if (productName !== '') {
+            productSearchRef?.current.focus();
+            setShowAutoComplete(true);
+          } else {
+            if (productSearchRef.current) {
+              productSearchRef.current.blur();
+              // productSearchRef.current.focus();
+            }
           }
+          setProductName('');
         }}>
         <Icon
           name="close-outline"
@@ -175,9 +181,7 @@ export default function Home(props) {
                 onFocus={() => setShowAutoComplete(true)}
                 ref={productSearchRef}
                 onBlur={() => {
-                  if (!productName.length) {
-                    setShowAutoComplete(false);
-                  }
+                  setTimeout(() => setShowAutoComplete(false), 1000);
                 }}
                 onChangeText={val => {
                   setProductName(val);
@@ -199,7 +203,7 @@ export default function Home(props) {
                         key={el}
                         onPress={() => onSelect(el)}
                         style={styles.AutocompleteItem}>
-                        <Text>{el}</Text>
+                        <Text category="s1">{el}</Text>
                       </TouchableOpacity>
                     ))}
                 </ScrollView>
@@ -227,11 +231,16 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   AutocompleteItem: {
-    paddingVertical: 3,
-    paddingLeft: 15,
+    paddingVertical: 10,
+    marginTop: 3,
+    backgroundColor: '#fff',
+    paddingHorizontal: 15,
+    borderRadius: 10,
   },
   AutocompleteArea: {
-    backgroundColor: '#fff',
+    width: '95%',
+    alignSelf: 'center',
+    marginTop: 5,
   },
 
   RectangleShapeView: {
