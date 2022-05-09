@@ -43,6 +43,7 @@ export const Products = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const previousRoute = useNavigationState(state => state.routes);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const props = route.params;
   const [searchProduct, setSearchProduct] = useState(null);
@@ -150,7 +151,6 @@ export const Products = () => {
       </Card>
     );
   };
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const shouldLoadComponent = index => index === selectedIndex;
 
@@ -159,7 +159,7 @@ export const Products = () => {
       <TabView
         style={{flex: 1}}
         selectedIndex={selectedIndex}
-        shouldLoadComponent={shouldLoadComponent}
+        // shouldLoadComponent={shouldLoadComponent
         onSelect={index => setSelectedIndex(index)}>
         <Tab title="Grid">
           <FlatList

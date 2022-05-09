@@ -23,6 +23,19 @@ function LoginScreen({navigation, route}) {
     signIn(signInData);
   };
 
+  // show or hide password
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  // toggle secure text entry property
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = props => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon {...props} name={!secureTextEntry ? 'eye-off' : 'eye'} />
+    </TouchableWithoutFeedback>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -40,11 +53,12 @@ function LoginScreen({navigation, route}) {
             <Input
               style={styles.inputField}
               placeholder="password"
-              secureTextEntry
+              secureTextEntry={secureTextEntry}
               value={signInData.password}
               onChangeText={val =>
                 setSignInData({...signInData, password: val})
               }
+              accessoryRight={renderIcon}
             />
             <View style={styles.submitWrapper}>
               <WideButton

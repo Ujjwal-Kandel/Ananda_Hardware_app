@@ -22,6 +22,7 @@ import {
   resetPlaceOrderState,
 } from '../../slices/cartSlice';
 import {useNavigation} from '@react-navigation/core';
+import {useCallback} from 'react';
 
 const CartItem = ({cartItem, handleChange}) => {
   return (
@@ -132,21 +133,24 @@ const CartList = () => {
 
   const renderItem = React.useCallback(
     ({item, index}) => <CartItem cartItem={item} handleChange={handleChange} />,
-    [],
+    [handleChange],
   );
 
-  const handleChange = (changeType, id) => {
-    const payload = {
-      id: id,
-    };
-    if (changeType === 'increment') {
-      dispatch(incrementQuantity(payload));
-    } else if (changeType === 'decrement') {
-      dispatch(decrementQuantity(payload));
-    } else if (changeType === 'remove') {
-      dispatch(removeFromCart(payload));
-    }
-  };
+  const handleChange = useCallback(
+    (changeType, id) => {
+      const payload = {
+        id: id,
+      };
+      if (changeType === 'increment') {
+        dispatch(incrementQuantity(payload));
+      } else if (changeType === 'decrement') {
+        dispatch(decrementQuantity(payload));
+      } else if (changeType === 'remove') {
+        dispatch(removeFromCart(payload));
+      }
+    },
+    [dispatch],
+  );
 
   if (isCartEmpty) {
     return (
