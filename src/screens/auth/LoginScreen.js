@@ -7,9 +7,12 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from 'react-native';
 import WideButton from '../../components/common/WideButton';
 import {useAuth} from '../../services/context/auth';
+
+import AnandaHardwareLogo from '../../assets/original_icon.png';
 
 function LoginScreen({navigation, route}) {
   const [signInData, setSignInData] = useState({email: '', password: ''});
@@ -42,6 +45,10 @@ function LoginScreen({navigation, route}) {
         <KeyboardAvoidingView
           pointerEvents="auto"
           style={[styles.container, styles.KeyboardAvoidingViewWrapper]}>
+          <Image
+            source={AnandaHardwareLogo}
+            style={{height: 200, width: 200}}
+          />
           <View style={styles.dividor} />
           <View style={styles.authForm}>
             <Input
@@ -81,7 +88,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   KeyboardAvoidingViewWrapper: {
     width: '100%',
