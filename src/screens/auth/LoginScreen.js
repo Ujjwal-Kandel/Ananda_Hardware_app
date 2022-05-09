@@ -1,4 +1,4 @@
-import {Button, Input, Text} from '@ui-kitten/components';
+import {Button, Icon, Input, Text} from '@ui-kitten/components';
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import WideButton from '../../components/common/WideButton';
 import {useAuth} from '../../services/context/auth';
 
 function LoginScreen({navigation, route}) {
@@ -46,11 +47,12 @@ function LoginScreen({navigation, route}) {
               }
             />
             <View style={styles.submitWrapper}>
-              <Button
+              <WideButton
                 onPress={handleLoginSubmit}
-                disabled={!signInData.email || !signInData.password}>
-                Submit
-              </Button>
+                text="Login"
+                size="small"
+                accessoryLeft={<Icon name="log-in-outline" />}
+              />
             </View>
           </View>
         </KeyboardAvoidingView>
