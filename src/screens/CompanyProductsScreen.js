@@ -22,8 +22,6 @@ import {
 import {capitalize} from 'lodash';
 import {LogBox} from 'react-native';
 
-import defaultImage from '../assets/original_icon.png';
-
 LogBox.ignoreLogs([
   'react-native-text-ticker: could not calculate metrics nodehandle_not_found',
 ]);
@@ -67,12 +65,12 @@ export const Products = () => {
       isMounted.current.category,
       String(isMounted.current.companyName).toUpperCase(),
     );
-  }, [category, companyName]);
+  }, []);
 
   const [data, setData] = useState(CompanyProducts());
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       console.log({previousRoute});
       setData(() => {
         console.log('eta...........');
@@ -82,8 +80,7 @@ export const Products = () => {
           String(isMounted.current.companyName).toUpperCase(),
         );
       });
-    }),
-    [route.params],
+    }, [previousRoute]),
   );
 
   const HeaderTitle = useCallback(
