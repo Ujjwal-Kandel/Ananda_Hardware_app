@@ -10,11 +10,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Modal, Spinner, Card, Button} from '@ui-kitten/components';
+import {Modal, Spinner, Card, Button, Icon} from '@ui-kitten/components';
 
 import {deleteAllProduct, syncData, syncCompany} from '../database/realm';
 import {SyncStatus} from '../components/syncStatus';
 import {useAuth} from '../services/context/auth';
+import WideButton from '../components/common/WideButton';
 
 export default function Sync() {
   const [syncStatus, setSyncStatus] = useState({
@@ -54,11 +55,9 @@ export default function Sync() {
   const {signOut} = useAuth();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <View style={styles.primaryRectangleContainer}>
-        <Text style={[styles.syncText, {borderRadius: 20, marginBottom: 50}]}>
-          Sync the app to load products
-        </Text>
+        <Text style={[styles.syncText]}>Sync the app to load products</Text>
         <TouchableOpacity
           onPress={handleSyncPress}
           style={styles.buttonContainer}>
@@ -92,17 +91,28 @@ export default function Sync() {
         </Modal>
       </View>
       <View style={styles.logoutButtonWrapper}>
-        <Button style={styles.logoutButton} onPress={signOut}>
-          Logout
-        </Button>
+        <WideButton
+          onPress={signOut}
+          text="Logout"
+          size="small"
+          accessoryLeft={<Icon name="log-out-outline" />}
+        />
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  logoutButtonWrapper: {alignItems: 'center'},
-  logoutButton: {marginTop: 30, width: '60%'},
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  logoutButtonWrapper: {
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 5,
+    alignSelf: 'center',
+  },
   errorText: {
     fontFamily: 'Lato-Regular',
     color: '#FF4E2B',
@@ -132,6 +142,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
+    marginTop: 50,
   },
   modalMsgContainer: {
     flex: 1,
