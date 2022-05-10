@@ -6,7 +6,7 @@ import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import {getAllProducts} from '../database/realm';
 import {NoSearchResults} from '../components/nosearchresults';
-import ListProduct from '../components/CompanyProductScreen/ListProduct';
+import ListItem from '../components/CompanyProductScreen/ListItem';
 
 export default function SearchRes({route}) {
   const navigation = useNavigation();
@@ -33,7 +33,7 @@ export default function SearchRes({route}) {
         ListFooterComponent={<View style={{height: hp('5%')}} />}
         renderItem={({item, index}) => {
           return (
-            <ListProduct
+            <ListItem
               item={item}
               isResultPage
               onPress={() =>
@@ -68,8 +68,6 @@ export default function SearchRes({route}) {
   }
 
   return (
-    <SafeAreaView>
-      {props.value === 'first' ? <First /> : <Second />}
-    </SafeAreaView>
+    <SafeAreaView>{props.value === 0 ? <First /> : <Second />}</SafeAreaView>
   );
 }

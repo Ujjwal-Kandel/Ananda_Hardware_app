@@ -8,14 +8,12 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
 } from 'react-native';
-import {Icon, Text, Input} from '@ui-kitten/components';
-import {RadioButton} from 'react-native-paper';
+import {Icon, Text, Input, Radio, RadioGroup} from '@ui-kitten/components';
 import {getAllProducts, getPname} from '../database/realm';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {TouchableWithoutFeedback} from '@ui-kitten/components/devsupport';
 import {useNavigation} from '@react-navigation/core';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
@@ -61,7 +59,7 @@ export default function Home(props) {
   };
 
   //for radiobutton to select search type:
-  const [value, setValue] = useState('first');
+  const [value, setValue] = useState(0);
 
   const handleSearchSubmit = () => {
     if (searchQuery) {
@@ -140,31 +138,22 @@ export default function Home(props) {
                   style={styles.SearchProduct}
                 />
                 <View style={styles.Rectangle2}>
-                  <RadioButton.Group
-                    onValueChange={newValue => setValue(newValue)}
-                    value={value}>
-                    <View style={styles.RadioButtonWrapper}>
-                      <View style={styles.Rectangle3}>
-                        <RadioButton
-                          value="first"
-                          styles={styles.RadioButton}
-                        />
+                  <View style={styles.RadioButtonWrapper}>
+                    <RadioGroup
+                      onChange={index => setValue(index)}
+                      selectedIndex={value}>
+                      <Radio>
                         <View>
                           <Text style={styles.text1}>Starts With</Text>
                         </View>
-                      </View>
-                      <View style={styles.Dividor} />
-                      <View style={styles.Rectangle3}>
-                        <RadioButton
-                          value="second"
-                          styles={styles.RadioButton}
-                        />
+                      </Radio>
+                      <Radio>
                         <View>
                           <Text style={styles.text1}>Contains</Text>
                         </View>
-                      </View>
-                    </View>
-                  </RadioButton.Group>
+                      </Radio>
+                    </RadioGroup>
+                  </View>
                 </View>
               </View>
               <TouchableOpacity

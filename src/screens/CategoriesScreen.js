@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {StyleSheet, View, SafeAreaView, FlatList} from 'react-native';
 
 import {Icon, Card, Input, Menu, MenuItem, Text} from '@ui-kitten/components';
@@ -7,12 +7,16 @@ import {
   getAllProducts,
   getCompanyCategoriesProducts,
 } from '../database/realm';
-import {useNavigation} from '@react-navigation/core';
+import {
+  useNavigation,
+  useFocusEffect,
+  useNavigationState,
+  useRoute,
+} from '@react-navigation/core';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {capitalize} from 'lodash';
 import {NoSearchResults} from '../components/nosearchresults';
 import {ProductQuantityIcon} from './CompaniesScreen';
 import TextTicker from 'react-native-text-ticker';
@@ -21,22 +25,28 @@ import {ListTypeSeparator} from './CompanyProductsScreen';
 const filter = (item, query) =>
   item.toLowerCase().startsWith(query.toLowerCase());
 
-export const CompanyCategories = ({route}) => {
+export const CompanyCategories = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
+  const previousRoutes = useNavigationState(state => state.routes);
+  function getCategories() {
+    return getCompanyCategories(companyName);
+  }
   const props = route.params;
   const [companyName, setCompanyName] = useState(props.companyName);
   const [searchCategory, setSearchCategory] = useState(null);
   const [data, setData] = useState(getCategories());
 
-  const navigation = useNavigation();
+  useFocusEffect(
+    useCallback(() => {
+      setData(getCategories());
+    }, [previousRoutes]),
+  );
 
   const onChangeText = query => {
     setSearchCategory(query);
     setData(getCategories().filter(item => filter(item, query)));
   };
-
-  function getCategories() {
-    return getCompanyCategories(companyName);
-  }
 
   function CategoriesListView() {
     const getCategoryQuantity = category => {
@@ -90,7 +100,7 @@ export const CompanyCategories = ({route}) => {
         value={searchCategory}
         onChangeText={onChangeText}
       />
-      {data === 0 ? <NoSearchResults /> : <CategoriesListView />}
+      {data.length === 0 ? <NoSearchResults /> : <CategoriesListView />}
     </SafeAreaView>
   );
 };

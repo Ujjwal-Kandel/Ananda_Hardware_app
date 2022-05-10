@@ -1,5 +1,5 @@
 import {Button, Icon, Input, Text} from '@ui-kitten/components';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  Alert,
 } from 'react-native';
 import WideButton from '../../components/common/WideButton';
 import {useAuth} from '../../services/context/auth';
@@ -15,19 +16,21 @@ import {useAuth} from '../../services/context/auth';
 import AnandaHardwareLogo from '../../assets/original_icon.png';
 
 function LoginScreen({navigation, route}) {
-  const [signInData, setSignInData] = useState({email: '', password: ''});
+  const [signInData, setSignInData] = useState({
+    email: '',
+    password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const {signIn} = useAuth();
-
-  const handleLoginSubmit = () => {
-    if (!signInData.email && !signInData.password) {
-      return;
-    }
-    console.log({signInData});
-    signIn(signInData);
-  };
 
   // show or hide password
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  useEffect(() => {
+    return () => {
+      setIsLoading(false);
+    };
+  }, []);
   // toggle secure text entry property
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry);
@@ -38,6 +41,23 @@ function LoginScreen({navigation, route}) {
       <Icon {...props} name={!secureTextEntry ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>
   );
+  const handleLoginSubmit = async () => {
+    if (!signInData.email && !signInData.password) {
+      return;
+    }
+    setIsLoading(true);
+    try {
+      await signIn(signInData);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      Alert.alert(
+        'Login Failed',
+        error.message ? error.message : 'Please try again.',
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,7 +92,12 @@ function LoginScreen({navigation, route}) {
                 onPress={handleLoginSubmit}
                 text="Login"
                 size="small"
-                accessoryLeft={<Icon name="log-in-outline" />}
+                accessoryRight={<Icon name="log-in-outline" />}
+                isSubmitting={isLoading}
+                disabled={
+                  isLoading ? true : !(signInData.email && signInData.password)
+                }
+                isLoading={isLoading}
               />
             </View>
           </View>
