@@ -17,7 +17,7 @@ import {
 import Swiper from 'react-native-swiper';
 import {LogBox} from 'react-native';
 
-import {Card, Modal, Text} from '@ui-kitten/components';
+import {Card, Icon, Modal, Text} from '@ui-kitten/components';
 import AddToCart from '../components/DetailScreen/AddToCart';
 
 LogBox.ignoreLogs([
@@ -132,7 +132,14 @@ export const DetailScreen = () => {
       <AddToCart product={product} setIsModalVisible={setIsModalVisible} />
       <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
         <Card>
-          <Text>Added to Cart</Text>
+          <View style={{alignItems: 'center'}}>
+            <Text category="h5">Added to Cart</Text>
+            <Icon
+              name={'checkmark-circle-outline'}
+              style={styles.iconStyles}
+              fill={'green'}
+            />
+          </View>
         </Card>
       </Modal>
     </SafeAreaView>
@@ -140,6 +147,10 @@ export const DetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  iconStyles: {
+    height: 32,
+    width: 32,
+  },
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },

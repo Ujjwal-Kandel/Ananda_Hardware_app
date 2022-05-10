@@ -249,7 +249,14 @@ const ItemRemovedModal = ({isModalVisible}) => {
   return (
     <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
       <Card>
-        <Text>item removed</Text>
+        <View style={{alignItems: 'center'}}>
+          <Text category="h5">Item removed</Text>
+          <Icon
+            name={'checkmark-circle-outline'}
+            style={styles.iconStyles}
+            fill={'green'}
+          />
+        </View>
       </Card>
     </Modal>
   );
@@ -260,6 +267,10 @@ export default CartList;
 const styles = StyleSheet.create({
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  iconStyles: {
+    height: 32,
+    width: 32,
   },
   cartScreenContainer: {
     justifyContent: 'space-between',
