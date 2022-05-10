@@ -77,10 +77,12 @@ export const cartSlice = createSlice({
         }
       }
     },
-    resetCart: (state, action) => initialState,
+    resetCart: (state, action) => {
+      return initialState;
+    },
     resetPlaceOrderState: (state, action) => {
       state.placeOrderStatus = 'idle';
-    }
+    },
   },
   extraReducers(builder) {
     builder
@@ -134,5 +136,5 @@ export const {
   incrementQuantity,
   decrementQuantity,
   resetCart,
-  resetPlaceOrderState
+  resetPlaceOrderState,
 } = cartSlice.actions;

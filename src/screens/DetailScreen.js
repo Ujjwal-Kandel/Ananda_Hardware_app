@@ -17,7 +17,7 @@ import {
 import Swiper from 'react-native-swiper';
 import {LogBox} from 'react-native';
 
-import {Text} from '@ui-kitten/components';
+import {Card, Modal, Text} from '@ui-kitten/components';
 import AddToCart from '../components/DetailScreen/AddToCart';
 
 LogBox.ignoreLogs([
@@ -39,7 +39,7 @@ export const DetailScreen = () => {
 
   useEffect(() => {
     navigation.setOptions({title: product.pname});
-  }, []);
+  }, [navigation, product.pname]);
 
   useEffect(() => {
     isMounted.current.code = props.code;
@@ -79,6 +79,8 @@ export const DetailScreen = () => {
       </Swiper>
     );
   };
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -127,12 +129,20 @@ export const DetailScreen = () => {
           Rs. {product.price}
         </Text>
       </View>
-      <AddToCart product={product} />
+      <AddToCart product={product} setIsModalVisible={setIsModalVisible} />
+      <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
+        <Card>
+          <Text>Added to Cart</Text>
+        </Card>
+      </Modal>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   text: {
     fontSize: 16,
     marginVertical: 5,

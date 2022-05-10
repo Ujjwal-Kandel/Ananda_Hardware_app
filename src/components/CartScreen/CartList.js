@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-import {Text, Icon, useTheme, Button} from '@ui-kitten/components';
+import {Text, Icon, useTheme, Button, Modal, Card} from '@ui-kitten/components';
 import TextTicker from 'react-native-text-ticker';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -24,7 +24,13 @@ import {
 import {useNavigation} from '@react-navigation/core';
 import {useCallback} from 'react';
 
-const CartItem = ({cartItem, handleChange}) => {
+const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
+  const itemCount = cartItem.quantity;
+  const isIncrementorDisabled = itemCount > cartItem.product.stock - 1;
+  const theme = useTheme();
+  const cartItemsFromRedux = useSelector(state => selectCartItems(state));
+
+  console.log({cartItem});
   return (
     <View style={styles.rowFlexContainer}>
       <Image
@@ -66,6 +72,7 @@ const CartItem = ({cartItem, handleChange}) => {
           }}>
           <View style={styles.orderSizeContainer}>
             <TouchableOpacity
+              style={styles.quantityModifierButton}
               onPress={() => {
                 handleChange('decrement', cartItem.product.id);
               }}>
@@ -75,8 +82,19 @@ const CartItem = ({cartItem, handleChange}) => {
                 fill="#333"
               />
             </TouchableOpacity>
-            <Text category="h6">{cartItem.quantity}</Text>
+            <Text category="h6" style={{}}>
+              {cartItem.quantity}
+            </Text>
             <TouchableOpacity
+              disabled={isIncrementorDisabled}
+              style={[
+                styles.quantityModifierButton,
+                {
+                  backgroundColor: isIncrementorDisabled
+                    ? theme['color-danger-300']
+                    : theme['color-basic-200'],
+                },
+              ]}
               onPress={() => {
                 handleChange('increment', cartItem.product.id);
               }}>
@@ -90,6 +108,12 @@ const CartItem = ({cartItem, handleChange}) => {
           <View>
             <TouchableOpacity
               onPress={() => {
+                if (cartItemsFromRedux.length > 1) {
+                  setIsModalVisible(true);
+                  setTimeout(() => {
+                    setIsModalVisible(false);
+                  }, 1000);
+                }
                 handleChange('remove', cartItem.product.id);
               }}>
               <Text status="danger">Remove</Text>
@@ -110,6 +134,8 @@ const CartList = () => {
   const [isCartEmpty, setIsCartEmpty] = useState(true);
 
   const [cartTotal, setCartTotal] = useState(0);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     if (cartItemsFromRedux.length > 0) {
@@ -132,7 +158,13 @@ const CartList = () => {
   const keyExtractor = (item, index) => index.toString();
 
   const renderItem = React.useCallback(
-    ({item, index}) => <CartItem cartItem={item} handleChange={handleChange} />,
+    ({item, index}) => (
+      <CartItem
+        cartItem={item}
+        handleChange={handleChange}
+        setIsModalVisible={setIsModalVisible}
+      />
+    ),
     [handleChange],
   );
 
@@ -154,11 +186,27 @@ const CartList = () => {
 
   if (isCartEmpty) {
     return (
-      <View style={{flex: 1, alignItems: 'center'}}>
+      <View
+        style={{
+          height: '100%',
+          alignItems: 'center',
+        }}>
         <Image
           source={require('../../img/emptyCard.png')}
           resizeMode="contain"
+          style={{height: 500}}
         />
+        <View style={{alignItems: 'center'}}>
+          <Text category="p1">There are no items in the cart.</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <Text category="p1" style={{color: theme['color-primary-500']}}>
+              Keep Shopping
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -192,13 +240,27 @@ const CartList = () => {
           </View>
         </View>
       </View>
+      <ItemRemovedModal isModalVisible={isModalVisible} />
     </View>
+  );
+};
+
+const ItemRemovedModal = ({isModalVisible}) => {
+  return (
+    <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
+      <Card>
+        <Text>item removed</Text>
+      </Card>
+    </Modal>
   );
 };
 
 export default CartList;
 
 const styles = StyleSheet.create({
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   cartScreenContainer: {
     justifyContent: 'space-between',
     height: '100%',
@@ -209,8 +271,6 @@ const styles = StyleSheet.create({
     width: 125,
     justifyContent: 'space-between',
     borderWidth: 1,
-    paddingVertical: 2,
-    paddingHorizontal: 5,
     borderColor: '#ddd',
   },
   productImage: {
@@ -229,6 +289,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginLeft: 0,
     width: '100%',
+  },
+  quantityModifierButton: {
+    height: '100%',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
   },
   resetButtonContainer: theme => ({
     backgroundColor: theme['color-basic-100'],

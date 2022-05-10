@@ -4,13 +4,9 @@ import React, {useState} from 'react';
 import {Icon, Text, Button, useTheme} from '@ui-kitten/components';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  addToCart,
-  selectCartItemByCode,
-  selectCartItemCount,
-} from '../../slices/cartSlice';
+import {addToCart, selectCartItemCount} from '../../slices/cartSlice';
 
-const AddToCart = ({product}) => {
+const AddToCart = ({product, setIsModalVisible}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -40,13 +36,14 @@ const AddToCart = ({product}) => {
   const cartQuantity = useSelector(state =>
     selectCartItemCount(state, productCode),
   );
-  const cartItem = useSelector(state =>
-    selectCartItemByCode(state, productCode),
-  );
+  // const cartItem = useSelector(state =>
+  //   selectCartItemByCode(state, productCode),
+  // );
 
-  const isAddToCartDisabled = cartQuantity
-    ? cartQuantity + itemCount > product.stock
-    : false;
+  const isAddToCartDisabled =
+    product.stock === 0 || cartQuantity
+      ? cartQuantity + itemCount > product.stock
+      : false;
 
   const isAddToCartIncrementorDisabled =
     itemCount > product.stock - 1 ||
@@ -96,6 +93,8 @@ const AddToCart = ({product}) => {
         onPress={() => {
           addItemToCart();
           setItemCount(1);
+          setIsModalVisible(true);
+          setTimeout(() => setIsModalVisible(false), 1000);
         }}
         disabled={isAddToCartDisabled}>
         <Text category="s2">Add To Cart </Text>
