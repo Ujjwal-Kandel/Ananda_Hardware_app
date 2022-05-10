@@ -6,17 +6,15 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {useNavigation} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
-function GridItem({item}) {
+function GridItem({item, onPress}) {
+  const navigation = useNavigation();
   return (
     <Card
-      onPress={() => {
-        navigation.navigate('Details', {
-          code: item.code,
-        });
-      }}
+      onPress={onPress}
       style={styles.card}
       status={item.stock <= 5 ? 'danger' : 'success'}>
       <Image style={styles.gridImage} source={{uri: item.image[0]}} />

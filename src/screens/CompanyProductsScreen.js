@@ -1,10 +1,6 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-} from 'react-native';
-import { Input, Divider, TabView, Tab} from '@ui-kitten/components';
+import {StyleSheet, View, FlatList} from 'react-native';
+import {Input, Divider, TabView, Tab} from '@ui-kitten/components';
 import {
   useNavigation,
   useRoute,
@@ -142,7 +138,16 @@ export const Products = () => {
               numColumns={2}
               data={data}
               keyExtractor={(_, index) => index.toString()}
-              renderItem={GridItem}
+              renderItem={({item, index}) => (
+                <GridItem
+                  item={item}
+                  onPress={() => {
+                    navigation.navigate('Details', {
+                      code: item.code,
+                    });
+                  }}
+                />
+              )}
             />
           </Tab>
           <Tab title="List">
