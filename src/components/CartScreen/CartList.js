@@ -28,6 +28,9 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
   const itemCount = cartItem.quantity;
   const isIncrementorDisabled = itemCount > cartItem.product.stock - 1;
   const theme = useTheme();
+  const cartItemsFromRedux = useSelector(state => selectCartItems(state));
+
+  console.log({cartItem});
   return (
     <View style={styles.rowFlexContainer}>
       <Image
@@ -79,7 +82,9 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
                 fill="#333"
               />
             </TouchableOpacity>
-            <Text category="h6">{cartItem.quantity}</Text>
+            <Text category="h6" style={{}}>
+              {cartItem.quantity}
+            </Text>
             <TouchableOpacity
               disabled={isIncrementorDisabled}
               style={[
@@ -103,11 +108,13 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
           <View>
             <TouchableOpacity
               onPress={() => {
-                setIsModalVisible(true);
+                if (cartItemsFromRedux.length > 1) {
+                  setIsModalVisible(true);
+                  setTimeout(() => {
+                    setIsModalVisible(false);
+                  }, 1000);
+                }
                 handleChange('remove', cartItem.product.id);
-                setTimeout(() => {
-                  setIsModalVisible(false);
-                }, 2000);
               }}>
               <Text status="danger">Remove</Text>
             </TouchableOpacity>
@@ -200,7 +207,6 @@ const CartList = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <ItemRemovedModal isModalVisible={isModalVisible} />
       </View>
     );
   }

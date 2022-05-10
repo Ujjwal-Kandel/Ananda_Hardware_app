@@ -130,9 +130,9 @@ export const DetailScreen = () => {
         </Text>
       </View>
       <AddToCart product={product} setIsModalVisible={setIsModalVisible} />
-      <Modal visible={isModalVisible}>
+      <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
         <Card>
-          <Text>cart added</Text>
+          <Text>Added to Cart</Text>
         </Card>
       </Modal>
     </SafeAreaView>
@@ -140,6 +140,9 @@ export const DetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   text: {
     fontSize: 16,
     marginVertical: 5,
