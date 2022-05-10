@@ -8,7 +8,6 @@ Company.schema = {
     name: {type: 'string'},
     product_count: {type: 'int'},
   },
-  primaryKey: 'name',
 };
 
 class Product extends Realm.Object {}
@@ -43,7 +42,7 @@ let getPname = (cname = '', category = '') => {
     mappedData = getAllProducts().map(x => x.pname);
   } else {
     mappedData = getAllProducts()
-      .filtered('cname==$0 && category == $1', cname, category)
+      .filtered('cname==[c] $0 && category == $1', cname, category)
       .map(x => x.pname);
   }
   const respData = new Set(mappedData);
@@ -64,7 +63,7 @@ let getCompanyNames = () => {
 
 let getCompanyCategories = cname => {
   const mappedData = getAllProducts()
-    .filtered('cname == $0', String(cname).toUpperCase())
+    .filtered('cname ==[c] $0', String(cname).toLowerCase())
     .map(x => x.category);
   const resData = new Set(mappedData);
   const companyCategories = Array.from(resData);
@@ -73,9 +72,9 @@ let getCompanyCategories = cname => {
 
 let getCompanyCategoriesProducts = (category, cname) => {
   let data = getAllProducts().filtered(
-    'category == $0 && cname == $1',
+    'category ==[c] $0 && cname ==[c] $1',
     category,
-    String(cname).toUpperCase(),
+    String(cname).toLowerCase(),
   );
   return data;
 };
@@ -93,11 +92,12 @@ let addProduct = (
 ) => {
   realm.write(() => {
     realm.create('Product', {
-      cname: _cname,
+      cname: String(_cname).toLowerCase(),
       pname: _pname,
       id: _id,
       price: _price,
       code: _code,
+      category: _category,
       image: _image,
       stock: _stock,
       dimension: _dimension,
@@ -115,8 +115,6 @@ let updateOnOrderPlaced = products => {
   const idsQuery = products.map(product => `id = ${product.id}`).join(' OR ');
   realm.write(() => {
     for (const product of realm.objects('Product').filtered(`(${idsQuery})`)) {
-      console.log({product});
-      console.log('productid', product.id, typeof product.id);
       const quantity = products.filter(p => p.id === product.id)[0].quantity;
       product.stock -= quantity;
     }
@@ -141,8 +139,9 @@ let syncCompany = async () => {
   try {
     const {data} = await axios.get('/api/companies');
     realm.write(() => {
+      realm.delete(realm.objects('Company'));
       data?.data.companies.forEach(obj => {
-        realm.create(Company, obj, 'modified');
+        realm.create(Company, obj);
       });
     });
   } catch (err) {

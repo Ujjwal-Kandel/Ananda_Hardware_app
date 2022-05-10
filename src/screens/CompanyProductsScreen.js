@@ -2,12 +2,9 @@ import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   FlatList,
-  Image,
-  Dimensions,
 } from 'react-native';
-import {Card, Input, Divider, TabView, Tab} from '@ui-kitten/components';
+import { Input, Divider, TabView, Tab} from '@ui-kitten/components';
 import {
   useNavigation,
   useRoute,
@@ -15,10 +12,7 @@ import {
   useNavigationState,
 } from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+
 import {capitalize} from 'lodash';
 import {LogBox} from 'react-native';
 
@@ -28,12 +22,11 @@ LogBox.ignoreLogs([
 
 import {getAllProducts} from '../database/realm';
 import {NoSearchResults} from '../components/nosearchresults';
-import ListProduct from '../components/CompanyProductScreen/ListProduct';
+import ListItem from '../components/CompanyProductScreen/ListItem';
+import GridItem from '../components/CompanyProductScreen/GridItem';
 
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
-
-const {height, width} = Dimensions.get('window');
 
 export function ListTypeSeparator() {
   return <View style={{margin: 1}} />;
@@ -43,7 +36,6 @@ export const Products = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const previousRoute = useNavigationState(state => state.routes);
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const props = route.params;
   const [searchProduct, setSearchProduct] = useState(null);
@@ -62,9 +54,9 @@ export const Products = () => {
 
   const CompanyProducts = useCallback(() => {
     return getAllProducts().filtered(
-      'category == $0 && cname == $1',
+      'category ==[c] $0 && cname ==[c] $1',
       isMounted.current.category,
-      String(isMounted.current.companyName).toUpperCase(),
+      String(isMounted.current.companyName).toLowerCase(),
     );
   }, []);
 
@@ -72,13 +64,11 @@ export const Products = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log({previousRoute});
       setData(() => {
-        console.log('eta...........');
         return getAllProducts().filtered(
-          'category == $0 && cname == $1',
+          'category ==[c] $0 && cname ==[c] $1',
           isMounted.current.category,
-          String(isMounted.current.companyName).toUpperCase(),
+          String(isMounted.current.companyName).toLowerCase(),
         );
       });
     }, [previousRoute]),
@@ -126,72 +116,9 @@ export const Products = () => {
     setData(CompanyProducts().filter(item => filter(item.pname, query)));
   };
 
-  const gridItems = ({item, index}) => {
-    return (
-      <Card
-        onPress={() => {
-          navigation.navigate('Details', {
-            code: item.code,
-          });
-        }}
-        style={styles.card}
-        status={item.stock <= 5 ? 'danger' : 'success'}>
-        <Image style={styles.gridImage} source={{uri: item.image[0]}} />
-        <Divider />
-        <TextTicker
-          style={[styles.namecode]}
-          duration={4000}
-          loop
-          bounce
-          repeatSpacer={50}
-          marqueeDelay={1000}>
-          {item.pname}
-        </TextTicker>
-        <Text style={styles.price}> Rs: {item.price} </Text>
-      </Card>
-    );
-  };
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const shouldLoadComponent = index => index === selectedIndex;
-
-  function ListView() {
-    return (
-      <TabView
-        style={{flex: 1}}
-        selectedIndex={selectedIndex}
-        // shouldLoadComponent={shouldLoadComponent
-        onSelect={index => setSelectedIndex(index)}>
-        <Tab title="Grid">
-          <FlatList
-            numColumns={2}
-            data={data}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={gridItems}
-          />
-        </Tab>
-        <Tab title="List">
-          <FlatList
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            ItemSeparatorComponent={ListTypeSeparator}
-            ListFooterComponent={ListTypeSeparator}
-            renderItem={({item, index}) => {
-              return (
-                <ListProduct
-                  item={item}
-                  onPress={() =>
-                    navigation.navigate('Details', {
-                      code: item.code,
-                    })
-                  }
-                />
-              );
-            }}
-          />
-        </Tab>
-      </TabView>
-    );
-  }
 
   return (
     <>
@@ -202,7 +129,44 @@ export const Products = () => {
         onChangeText={onChangeText}
       />
       <View style={{marginTop: 5}} />
-      {data === 0 ? <NoSearchResults /> : <ListView />}
+      {data === 0 ? (
+        <NoSearchResults />
+      ) : (
+        <TabView
+          style={{flex: 1}}
+          selectedIndex={selectedIndex}
+          shouldLoadComponent={shouldLoadComponent}
+          onSelect={index => setSelectedIndex(index)}>
+          <Tab title="Grid">
+            <FlatList
+              numColumns={2}
+              data={data}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={GridItem}
+            />
+          </Tab>
+          <Tab title="List">
+            <FlatList
+              data={data}
+              keyExtractor={(item, index) => index.toString()}
+              ItemSeparatorComponent={ListTypeSeparator}
+              ListFooterComponent={ListTypeSeparator}
+              renderItem={({item, index}) => {
+                return (
+                  <ListItem
+                    item={item}
+                    onPress={() =>
+                      navigation.navigate('Details', {
+                        code: item.code,
+                      })
+                    }
+                  />
+                );
+              }}
+            />
+          </Tab>
+        </TabView>
+      )}
     </>
   );
 };
@@ -211,57 +175,5 @@ const styles = StyleSheet.create({
   headerTextTickerStyle: {
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  dividerStyles: {
-    paddingBottom: 10,
-  },
-  button: {
-    alignItems: 'center',
-    marginTop: 50,
-  },
-  card: {
-    margin: 2,
-    // marginTop: '2%',
-    width: width / 2,
-    // marginLeft: '2%',
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 22,
-    fontFamily: 'Lato-Regular',
-    width: wp('50%'),
-  },
-  gridContainer: {
-    position: 'relative',
-    width: '100%',
-    alignSelf: 'center',
-    paddingTop: 5,
-  },
-  gridImage: {
-    flex: 1,
-    width: wp('33%'),
-    height: hp('20%'),
-    resizeMode: 'contain',
-  },
-  namecode: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 12,
-    fontWeight: '400',
-    marginTop: 4,
-    width: wp('100%'),
-  },
-  price: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 12,
-    fontWeight: '400',
-    textAlign: 'left',
-    width: 150,
-  },
-  tabContainer: {
-    height: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

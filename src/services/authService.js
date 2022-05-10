@@ -1,7 +1,5 @@
 import axios from './httpService';
 
-export const baseUrl = 'http://192.168.10.69:3000';
-
 const signIn = async ({email, password}) => {
   try {
     const {data: response} = await axios.post('/api/login', {

@@ -9,7 +9,7 @@ import {capitalize} from 'lodash';
 import {ProductQuantityIcon} from '../../screens/CompaniesScreen';
 import {getAllProducts} from '../../database/realm';
 
-const ListProduct = ({item, isResultPage, onPress}) => {
+const ListItem = ({item, isResultPage, onPress}) => {
   const getProductQuantity = () =>
     getAllProducts().filtered('code==$0', item.code)[0].stock;
   return (
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListProduct;
+export default ListItem;

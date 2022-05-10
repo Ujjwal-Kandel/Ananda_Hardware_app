@@ -88,7 +88,6 @@ export const cartSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(placeOrder.fulfilled, (state, action) => {
-        console.log('placed');
         const cartItems = state.cartItems.map(cartItem => ({
           id: cartItem.product.id,
           quantity: cartItem.quantity,
