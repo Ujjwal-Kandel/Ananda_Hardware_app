@@ -25,6 +25,9 @@ import {useNavigation} from '@react-navigation/core';
 import {useCallback} from 'react';
 
 const CartItem = ({cartItem, handleChange}) => {
+  const itemCount = cartItem.quantity;
+  const isIncrementorDisabled = itemCount > cartItem.product.stock - 1;
+  const theme = useTheme();
   return (
     <View style={styles.rowFlexContainer}>
       <Image
@@ -66,6 +69,7 @@ const CartItem = ({cartItem, handleChange}) => {
           }}>
           <View style={styles.orderSizeContainer}>
             <TouchableOpacity
+              style={styles.quantityModifierButton}
               onPress={() => {
                 handleChange('decrement', cartItem.product.id);
               }}>
@@ -77,6 +81,15 @@ const CartItem = ({cartItem, handleChange}) => {
             </TouchableOpacity>
             <Text category="h6">{cartItem.quantity}</Text>
             <TouchableOpacity
+              disabled={isIncrementorDisabled}
+              style={[
+                styles.quantityModifierButton,
+                {
+                  backgroundColor: isIncrementorDisabled
+                    ? theme['color-danger-300']
+                    : theme['color-basic-200'],
+                },
+              ]}
               onPress={() => {
                 handleChange('increment', cartItem.product.id);
               }}>
@@ -209,8 +222,6 @@ const styles = StyleSheet.create({
     width: 125,
     justifyContent: 'space-between',
     borderWidth: 1,
-    paddingVertical: 2,
-    paddingHorizontal: 5,
     borderColor: '#ddd',
   },
   productImage: {
@@ -229,6 +240,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     marginLeft: 0,
     width: '100%',
+  },
+  quantityModifierButton: {
+    height: '100%',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
   },
   resetButtonContainer: theme => ({
     backgroundColor: theme['color-basic-100'],
