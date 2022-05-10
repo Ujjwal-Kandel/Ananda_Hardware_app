@@ -10,7 +10,7 @@ import {
   selectCartItemCount,
 } from '../../slices/cartSlice';
 
-const AddToCart = ({product}) => {
+const AddToCart = ({product, setIsModalVisible}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -96,6 +96,8 @@ const AddToCart = ({product}) => {
         onPress={() => {
           addItemToCart();
           setItemCount(1);
+          setIsModalVisible(true);
+          setTimeout(() => setIsModalVisible(false), 1000);
         }}
         disabled={isAddToCartDisabled}>
         <Text category="s2">Add To Cart </Text>

@@ -16,6 +16,8 @@ import {SyncStatus} from '../components/syncStatus';
 
 import {CommonActions, useNavigation} from '@react-navigation/core';
 import {syncCompany, syncData} from '../database/realm';
+import {useDispatch} from 'react-redux';
+import {resetCart} from '../slices/cartSlice';
 
 export default function Sync() {
   const [syncStatus, setSyncStatus] = useState({
@@ -26,6 +28,8 @@ export default function Sync() {
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
+
+  const dispatch = useDispatch();
 
   let combinedFunc = async () => {
     setIsLoading(true);
@@ -56,6 +60,8 @@ export default function Sync() {
 
   useEffect(() => {
     if (syncStatus?.title === 'Sync successful!') {
+      // cart reset
+      dispatch(resetCart());
       // reset the router history and navigate back to browse screen
       navigation.dispatch(
         CommonActions.reset({
@@ -64,7 +70,7 @@ export default function Sync() {
         }),
       );
     }
-  }, [syncStatus, navigation]);
+  }, [syncStatus, navigation, dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>

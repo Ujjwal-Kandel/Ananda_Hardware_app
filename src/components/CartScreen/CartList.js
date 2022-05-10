@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-import {Text, Icon, useTheme, Button} from '@ui-kitten/components';
+import {Text, Icon, useTheme, Button, Modal, Card} from '@ui-kitten/components';
 import TextTicker from 'react-native-text-ticker';
 
 import {useSelector, useDispatch} from 'react-redux';
@@ -24,7 +24,7 @@ import {
 import {useNavigation} from '@react-navigation/core';
 import {useCallback} from 'react';
 
-const CartItem = ({cartItem, handleChange}) => {
+const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
   const itemCount = cartItem.quantity;
   const isIncrementorDisabled = itemCount > cartItem.product.stock - 1;
   const theme = useTheme();
@@ -103,7 +103,11 @@ const CartItem = ({cartItem, handleChange}) => {
           <View>
             <TouchableOpacity
               onPress={() => {
+                setIsModalVisible(true);
                 handleChange('remove', cartItem.product.id);
+                setTimeout(() => {
+                  setIsModalVisible(false);
+                }, 2000);
               }}>
               <Text status="danger">Remove</Text>
             </TouchableOpacity>
@@ -123,6 +127,8 @@ const CartList = () => {
   const [isCartEmpty, setIsCartEmpty] = useState(true);
 
   const [cartTotal, setCartTotal] = useState(0);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     if (cartItemsFromRedux.length > 0) {
@@ -145,7 +151,13 @@ const CartList = () => {
   const keyExtractor = (item, index) => index.toString();
 
   const renderItem = React.useCallback(
-    ({item, index}) => <CartItem cartItem={item} handleChange={handleChange} />,
+    ({item, index}) => (
+      <CartItem
+        cartItem={item}
+        handleChange={handleChange}
+        setIsModalVisible={setIsModalVisible}
+      />
+    ),
     [handleChange],
   );
 
@@ -167,11 +179,28 @@ const CartList = () => {
 
   if (isCartEmpty) {
     return (
-      <View style={{flex: 1, alignItems: 'center'}}>
+      <View
+        style={{
+          height: '100%',
+          alignItems: 'center',
+        }}>
         <Image
           source={require('../../img/emptyCard.png')}
           resizeMode="contain"
+          style={{height: 500}}
         />
+        <View style={{alignItems: 'center'}}>
+          <Text category="p1">There are no items in the cart.</Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <Text category="p1" style={{color: theme['color-primary-500']}}>
+              Keep Shopping
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ItemRemovedModal isModalVisible={isModalVisible} />
       </View>
     );
   }
@@ -205,13 +234,27 @@ const CartList = () => {
           </View>
         </View>
       </View>
+      <ItemRemovedModal isModalVisible={isModalVisible} />
     </View>
+  );
+};
+
+const ItemRemovedModal = ({isModalVisible}) => {
+  return (
+    <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
+      <Card>
+        <Text>item removed</Text>
+      </Card>
+    </Modal>
   );
 };
 
 export default CartList;
 
 const styles = StyleSheet.create({
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   cartScreenContainer: {
     justifyContent: 'space-between',
     height: '100%',
