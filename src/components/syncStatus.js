@@ -1,18 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
 import {Icon} from '@ui-kitten/components';
 
 export const SyncStatus = ({status}) => {
   return (
-    <View
-      style={{
-        alignItems: 'center',
-        flex: 1,
-        alignContent: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
+    <View style={styles.syncWrapper}>
       <Text style={styles.titleText}>{status.title}</Text>
       <Icon
         name={
@@ -20,7 +13,7 @@ export const SyncStatus = ({status}) => {
             ? 'checkmark-circle-outline'
             : 'close-circle-outline'
         }
-        style={{width: 32, height: 32}}
+        style={styles.iconStyles}
         fill={status.color}
       />
       <Text style={styles.msgText}>{status.msg}</Text>
@@ -29,6 +22,16 @@ export const SyncStatus = ({status}) => {
 };
 
 const styles = StyleSheet.create({
+  iconStyles: {
+    width: 32,
+    height: 32,
+  },
+  syncWrapper: {
+    flex: 1,
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   titleText: {
     fontFamily: 'Lato-Regular',
     color: '#191919',

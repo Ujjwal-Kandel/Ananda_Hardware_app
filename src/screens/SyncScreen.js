@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -10,12 +10,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Modal, Spinner, Card, Button, Icon} from '@ui-kitten/components';
+import {Modal, Spinner, Card} from '@ui-kitten/components';
 
-import {deleteAllProduct, syncData, syncCompany} from '../database/realm';
 import {SyncStatus} from '../components/syncStatus';
-import {useAuth} from '../services/context/auth';
-import WideButton from '../components/common/WideButton';
+
+import {CommonActions, useNavigation} from '@react-navigation/core';
+import {syncCompany, syncData} from '../database/realm';
 
 export default function Sync() {
   const [syncStatus, setSyncStatus] = useState({
@@ -25,6 +25,7 @@ export default function Sync() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const navigation = useNavigation();
 
   let combinedFunc = async () => {
     setIsLoading(true);
@@ -53,6 +54,18 @@ export default function Sync() {
     setVisible(true);
   };
 
+  useEffect(() => {
+    if (syncStatus?.title === 'Sync successful!') {
+      // reset the router history and navigate back to browse screen
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'BrowseStackScreen'}],
+        }),
+      );
+    }
+  }, [syncStatus, navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.primaryRectangleContainer}>
@@ -67,17 +80,10 @@ export default function Sync() {
           backdropStyle={styles.backdrop}
           onBackdropPress={() => setVisible(false)}>
           <Card>
-            <View
-              style={{
-                width: 180,
-                height: 120,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
+            <View style={styles.syncModalBodyContainer}>
               {isLoading ? (
                 <View style={styles.modalMsgContainer}>
-                  <Text
-                    style={[styles.syncText, {fontSize: 24, marginBottom: 10}]}>
+                  <Text style={[styles.syncText, styles.fetchingText]}>
                     Fetching Data...
                   </Text>
                   <Spinner size="giant" status="info" />
@@ -97,6 +103,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
+  },
+  syncModalBodyContainer: {
+    width: 180,
+    height: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logoutButtonWrapper: {
     alignItems: 'center',
@@ -158,4 +170,5 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     textAlign: 'center',
   },
+  fetchingText: {fontSize: 24, marginBottom: 10},
 });
