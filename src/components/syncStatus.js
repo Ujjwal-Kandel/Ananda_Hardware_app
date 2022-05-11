@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
-import {Icon} from '@ui-kitten/components';
+import {Button, Icon, Text} from '@ui-kitten/components';
 
-export const SyncStatus = ({status}) => {
+export const SyncStatus = ({status, onButtonPress}) => {
   return (
     <View style={styles.syncWrapper}>
       <Text style={styles.titleText}>{status.title}</Text>
@@ -17,6 +17,9 @@ export const SyncStatus = ({status}) => {
         fill={status.color}
       />
       <Text style={styles.msgText}>{status.msg}</Text>
+      <Button size={'large'} appearance={'ghost'} onPress={onButtonPress}>
+        Ok
+      </Button>
     </View>
   );
 };

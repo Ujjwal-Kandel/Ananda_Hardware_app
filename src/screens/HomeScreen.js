@@ -144,6 +144,7 @@ export default function Home(props) {
                 <View style={styles.Rectangle2}>
                   <View style={styles.RadioButtonWrapper}>
                     <RadioGroup
+                      style={{flexDirection: 'row'}}
                       onChange={index => setValue(index)}
                       selectedIndex={value}>
                       <Radio>
