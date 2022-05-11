@@ -20,6 +20,8 @@ import {
   resetCart,
   placeOrder,
   resetPlaceOrderState,
+  selectPlaceOrderStatus,
+  setPlaceOrderStatus,
 } from '../../slices/cartSlice';
 import {useNavigation} from '@react-navigation/core';
 import {useCallback} from 'react';
@@ -136,11 +138,11 @@ const CartList = () => {
   const [cartTotal, setCartTotal] = useState(0);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalTextContent, setModalTextContent] = useState('Item Removed');
 
   useEffect(() => {
     if (cartItemsFromRedux.length > 0) {
       setIsCartEmpty(false);
-      const total = 0;
       setCartTotal(() => {
         return cartItemsFromRedux
           .map(cartItem => cartItem.product.price * cartItem.quantity)
@@ -184,6 +186,22 @@ const CartList = () => {
     [dispatch],
   );
 
+  const placeOrderStatus = useSelector(selectPlaceOrderStatus);
+  console.log({placeOrderStatus});
+  const handlePlaceOrder = () => {
+    dispatch(placeOrder());
+  };
+  useEffect(() => {
+    if (placeOrderStatus === 'success') {
+      setModalTextContent('Ordered Successfully');
+      setIsModalVisible(true);
+      setTimeout(() => {
+        setIsModalVisible(false);
+        dispatch(setPlaceOrderStatus({status: 'idle'}));
+      }, 1500);
+    }
+  }, [placeOrderStatus, dispatch]);
+
   if (isCartEmpty) {
     return (
       <View
@@ -207,6 +225,10 @@ const CartList = () => {
             </Text>
           </TouchableOpacity>
         </View>
+        <NotificationModal
+          isModalVisible={isModalVisible}
+          modalTextContent={modalTextContent}
+        />
       </View>
     );
   }
@@ -221,11 +243,7 @@ const CartList = () => {
         renderItem={renderItem}
       />
       <View style={styles.resetButtonContainer(theme)}>
-        <Button
-          style={{flex: 1}}
-          onPress={() => {
-            dispatch(placeOrder());
-          }}>
+        <Button style={{flex: 1}} onPress={handlePlaceOrder}>
           Place Order
         </Button>
         <View
@@ -240,17 +258,20 @@ const CartList = () => {
           </View>
         </View>
       </View>
-      <ItemRemovedModal isModalVisible={isModalVisible} />
+      <NotificationModal
+        isModalVisible={isModalVisible}
+        modalTextContent={modalTextContent}
+      />
     </View>
   );
 };
 
-const ItemRemovedModal = ({isModalVisible}) => {
+const NotificationModal = ({isModalVisible, modalTextContent}) => {
   return (
     <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
       <Card>
         <View style={{alignItems: 'center'}}>
-          <Text category="h5">Item removed</Text>
+          <Text category="h5">{modalTextContent}</Text>
           <Icon
             name={'checkmark-circle-outline'}
             style={styles.iconStyles}

@@ -54,6 +54,9 @@ export const cartSlice = createSlice({
         state.cartItems[productIndex].quantity += action.payload.quantity;
       }
     },
+    setPlaceOrderStatus: (state, action) => {
+      state.placeOrderStatus = action.payload.status;
+    },
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
         item => item.product.id !== action.payload.id,
@@ -130,6 +133,10 @@ export const selectCartItemCount = (state, productCode) => {
   return cartItem.quantity;
 };
 
+export const selectPlaceOrderStatus = state => {
+  return state.cart.placeOrderStatus;
+};
+
 export const {
   addToCart,
   removeFromCart,
@@ -137,4 +144,5 @@ export const {
   decrementQuantity,
   resetCart,
   resetPlaceOrderState,
+  setPlaceOrderStatus,
 } = cartSlice.actions;

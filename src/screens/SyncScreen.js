@@ -1,16 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, SafeAreaView} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Modal, Spinner, Card} from '@ui-kitten/components';
+import {Modal, Spinner, Card, Icon, Text} from '@ui-kitten/components';
 
 import {SyncStatus} from '../components/syncStatus';
 
@@ -58,28 +52,40 @@ export default function Sync() {
     setVisible(true);
   };
 
+  const resetNavigationHistory = () => {
+    // reset the router history and navigate back to browse screen
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'BrowseStackScreen'}],
+      }),
+    );
+  };
+
   useEffect(() => {
     if (syncStatus?.title === 'Sync successful!') {
       // cart reset
       dispatch(resetCart());
-      // reset the router history and navigate back to browse screen
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{name: 'BrowseStackScreen'}],
-        }),
-      );
     }
   }, [syncStatus, navigation, dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.primaryRectangleContainer}>
-        <Text style={[styles.syncText]}>Sync the app to load products</Text>
+        <Text category={'h2'} style={[styles.syncText]}>
+          Sync the app to load products
+        </Text>
         <TouchableOpacity
           onPress={handleSyncPress}
           style={styles.buttonContainer}>
-          <Text style={styles.syncText}>SYNC</Text>
+          <View style={styles.syncButtonContent}>
+            <Text category={'h4'}>Sync</Text>
+            <Icon
+              name="sync-outline"
+              fill="#252525"
+              style={styles.iconStyles}
+            />
+          </View>
         </TouchableOpacity>
         <Modal
           visible={visible}
@@ -95,7 +101,12 @@ export default function Sync() {
                   <Spinner size="giant" status="info" />
                 </View>
               ) : (
-                <SyncStatus status={syncStatus} />
+                <View>
+                  <SyncStatus
+                    status={syncStatus}
+                    onButtonPress={resetNavigationHistory}
+                  />
+                </View>
               )}
             </View>
           </Card>
@@ -110,12 +121,14 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+
   syncModalBodyContainer: {
     width: 180,
-    height: 120,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  iconStyles: {height: 32, width: 32, marginLeft: 5},
   logoutButtonWrapper: {
     alignItems: 'center',
     position: 'absolute',
@@ -144,8 +157,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   buttonContainer: {
-    height: hp('10%'),
-    width: wp('30%'),
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     backgroundColor: '#fff',
     borderRadius: 20,
     alignItems: 'center',
@@ -153,13 +166,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 50,
   },
+
+  syncButtonContent: {flexDirection: 'row', alignItems: 'center'},
   modalMsgContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   primaryRectangleContainer: {
-    backgroundColor: '#F5E5DA',
     width: wp('93%'),
     height: hp('50%'),
     marginLeft: 15,
@@ -169,11 +183,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   syncText: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlignVertical: 'center',
     textAlign: 'center',
   },
   fetchingText: {fontSize: 24, marginBottom: 10},
