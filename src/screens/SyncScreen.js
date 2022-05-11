@@ -1,16 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, SafeAreaView} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Modal, Spinner, Card} from '@ui-kitten/components';
+import {Modal, Spinner, Card, Text} from '@ui-kitten/components';
 
 import {SyncStatus} from '../components/syncStatus';
 
@@ -79,7 +73,7 @@ export default function Sync() {
         <TouchableOpacity
           onPress={handleSyncPress}
           style={styles.buttonContainer}>
-          <Text style={styles.syncText}>SYNC</Text>
+          <Text>SYNC</Text>
         </TouchableOpacity>
         <Modal
           visible={visible}
@@ -160,19 +154,19 @@ const styles = StyleSheet.create({
   },
   primaryRectangleContainer: {
     backgroundColor: '#F5E5DA',
-    width: wp('93%'),
+    // width: wp('93%'),
     height: hp('50%'),
-    marginLeft: 15,
+    margin: 15,
     marginTop: 120,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   syncText: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 30,
-    fontWeight: 'bold',
+    // fontFamily: 'Lato-Regular',
+    // color: '#191919',
+    // fontSize: 30,
+    // fontWeight: 'bold',
     textAlignVertical: 'center',
     textAlign: 'center',
   },

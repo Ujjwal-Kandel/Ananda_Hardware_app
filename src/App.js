@@ -5,6 +5,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
+import mapping from '../mapping.json';
 
 // redux
 import {Provider} from 'react-redux';
@@ -18,7 +19,7 @@ export default function App() {
     <>
       <IconRegistry icons={EvaIconsPack} />
       <Provider store={store}>
-        <ApplicationProvider {...eva} theme={eva.light}>
+        <ApplicationProvider {...eva} theme={eva.light} customMapping={mapping}>
           <SafeAreaProvider>
             <Router />
           </SafeAreaProvider>

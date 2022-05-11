@@ -18,15 +18,7 @@ const ListItem = ({item, isResultPage, onPress}) => {
         status={item.stock <= 5 ? 'danger' : 'success'}>
         <View style={styles.rowContainer}>
           <View style={styles.textContainer}>
-            <TextTicker
-              style={[styles.companyNameTextStyles]}
-              duration={4000}
-              loop
-              bounce
-              repeatSpacer={50}
-              marqueeDelay={1000}>
-              {capitalize(item.pname)}
-            </TextTicker>
+            <Text>{capitalize(item.pname)}</Text>
             <View style={styles.spacer} />
 
             {isResultPage ? (

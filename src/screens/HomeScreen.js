@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -32,6 +32,10 @@ export default function Home(props) {
   const [showAutoComplete, setShowAutoComplete] = useState(false);
   const [filteredData, setFilteredData] = useState(DATA);
   const [productName, setProductName] = useState('');
+
+  useEffect(() => {
+    setFilteredData(getPname());
+  }, []);
 
   const productSearchRef = useRef();
   const onCheckedChange = isChecked => {

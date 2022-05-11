@@ -37,8 +37,8 @@ export default GridItem;
 
 const styles = StyleSheet.create({
   card: {
-    margin: 2,
-    width: width / 2,
+    flex: 1,
+    aspectRatio: 1,
   },
   gridImage: {
     flex: 1,
