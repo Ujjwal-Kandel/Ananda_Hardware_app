@@ -67,7 +67,14 @@ function AuthProvider({children}) {
         setAuthData(_authData);
       }
     } catch (error) {
-      throw new Error(error.response.data.message);
+      console.log({error});
+      if (error.response && error.response.message) {
+        throw new Error(error.response.data.message);
+      }
+      if (error.message) {
+        throw new Error(error.message);
+      }
+      throw new Error('Please check your internet connection and try again.');
     }
   };
 

@@ -25,6 +25,7 @@ export default function Sync() {
     title: '',
     msg: '',
     color: '',
+    flag: null,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -44,6 +45,7 @@ export default function Sync() {
         title: 'Sync successful!',
         msg: 'Your products are updated.',
         color: '#69DD3B',
+        flag: true,
       });
     } catch (err) {
       console.log({err});
@@ -51,6 +53,7 @@ export default function Sync() {
         title: 'Sync failed!',
         msg: 'Check your internet connection and try again.',
         color: '#FF4E2B',
+        flag: false,
       });
     }
     setIsLoading(false);
@@ -63,12 +66,15 @@ export default function Sync() {
 
   const resetNavigationHistory = () => {
     // reset the router history and navigate back to browse screen
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: 'BrowseStackScreen'}],
-      }),
-    );
+    if (syncStatus.flag) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'BrowseStackScreen'}],
+        }),
+      );
+    }
+    setVisible(false);
   };
 
   useEffect(() => {
