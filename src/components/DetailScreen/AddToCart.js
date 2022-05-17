@@ -65,8 +65,8 @@ const AddToCart = ({product, setIsModalVisible}) => {
             fill={theme['color-basic-1100']}
           />
         </TouchableOpacity>
-        <View style={[styles.elementContainer, {flex: 0.75}]}>
-          <Text category="h5">{itemCount}</Text>
+        <View style={[styles.elementContainer]}>
+          <Text category={'h6'}>{itemCount}</Text>
         </View>
         <TouchableOpacity
           style={[
@@ -112,10 +112,11 @@ const styles = StyleSheet.create({
     backgroundColor: theme['color-basic-100'],
     flexDirection: 'row',
     padding: 10,
+    justifyContent: 'space-between',
   }),
   container: {
     flexDirection: 'row',
-    flex: 1,
+    width: '50%',
     height: 45,
     alignItems: 'center',
     justifyContent: 'space-between',

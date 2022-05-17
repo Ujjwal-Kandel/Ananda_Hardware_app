@@ -13,7 +13,7 @@ import {NoSearchResults} from '../components/nosearchresults';
 import {useTheme} from '@ui-kitten/components';
 
 const filter = (item, query) =>
-  item.toLowerCase().startsWith(query.toLowerCase());
+  item.toLowerCase().includes(query.toLowerCase());
 
 export const ProductQuantityIcon = ({quantity}) => {
   const theme = useTheme();

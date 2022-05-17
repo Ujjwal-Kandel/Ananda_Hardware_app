@@ -1,7 +1,15 @@
 {
   "strict": {
-    "text-font-family": "Gill Sans MT Book",
-    "text-font-family-bold": "Gill Sans MT Bold",
+    "text-font-family": "Raleway-Regular",
+    "text-font-family-bold": "Raleway-Bold",
+    "text-font-family-ebold": "Raleway-ExtraBold",
+
+    "text-heading-4-font-size": 28,
+    "text-heading-4-font-weight": "600",
+    "text-heading-4-font-family": "$text-font-family-ebold",
+    "text-heading-5-font-size": 24,
+    "text-heading-5-font-weight": "600",
+    "text-heading-5-font-family": "$text-font-family-bold",
     "text-heading-6-font-size": 20,
     "text-heading-6-font-weight": "600",
     "text-heading-6-font-family:": "$text-font-family-bold",

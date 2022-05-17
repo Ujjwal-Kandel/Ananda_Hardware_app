@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {
   widthPercentageToDP as wp,
@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/core';
 
 import {getAllProducts} from '../database/realm';
 // import {NoSearchResults} from '../components/nosearchresults';
-import {Modal, Card} from '@ui-kitten/components';
+import {Modal, Card, Text} from '@ui-kitten/components';
 
 export default function ScanScreen() {
   const [visible, setVisible] = useState(null);
@@ -31,9 +31,12 @@ export default function ScanScreen() {
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       {!visible && (
         <View style={styles.container}>
-          <Text style={styles.text}>Place the scanner above the QR code</Text>
+          <View style={{paddingVertical: 10}}>
+            <Text category="h5">Place the scanner above the QR code</Text>
+          </View>
+
           <QRCodeScanner
-            style={{height: hp('100%')}}
+            style={{flex: 1}}
             fadeIn={false}
             reactivate={true}
             reactivateTimeout={6000}
@@ -44,20 +47,17 @@ export default function ScanScreen() {
         </View>
       )}
       <Modal visible={visible} onBackdropPress={() => setVisible(false)}>
-        <Card>
-          <View>
-            <View
-              style={{
-                alignItems: 'center',
-                flex: 1,
-                alignContent: 'center',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text style={styles.titleText}>No Product Found</Text>
-
-              <Text style={styles.msgText}>QR code may be invalid.</Text>
-            </View>
+        <Card
+          style={{
+            alignItems: 'center',
+            flex: 1,
+            padding: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View style={{alignItems: 'center'}}>
+            <Text category="h5">No Product Found</Text>
+            <Text category={'label'}>QR code may be invalid.</Text>
           </View>
         </Card>
       </Modal>
@@ -70,29 +70,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: wp('10%'),
-  },
-  text: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    paddingTop: hp('1%'),
-    marginBottom: hp('1%'),
-  },
-  titleText: {
-    fontFamily: 'Lato-Regular',
-    color: '#191919',
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  msgText: {
-    fontFamily: 'Lato-Regular',
-    textAlign: 'center',
-    marginTop: 10,
+    flex: 1,
   },
 });

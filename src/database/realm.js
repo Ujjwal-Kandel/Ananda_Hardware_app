@@ -1,7 +1,7 @@
 import Realm from 'realm';
 import axios from '../services/httpService';
 
-class Company extends Realm.Object {}
+class Company {}
 Company.schema = {
   name: 'Company',
   properties: {
@@ -10,7 +10,7 @@ Company.schema = {
   },
 };
 
-class Product extends Realm.Object {}
+class Product {}
 Product.schema = {
   name: 'Product',
   properties: {
@@ -45,6 +45,7 @@ let getPname = (cname = '', category = '') => {
       .filtered('cname==[c] $0 && category == $1', cname, category)
       .map(x => x.pname);
   }
+  return mappedData;
   const respData = new Set(mappedData);
   const Pnames = Array.from(respData);
   return Pnames;
@@ -125,6 +126,7 @@ let syncData = async () => {
   try {
     const {data} = await axios.get('/api/products');
     realm.write(() => {
+      realm.delete(realm.objects('Product'));
       data?.data.products.forEach(obj => {
         realm.create(Product, obj, 'modified');
       });

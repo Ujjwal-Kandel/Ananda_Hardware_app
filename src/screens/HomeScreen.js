@@ -106,14 +106,7 @@ export default function Home(props) {
         justifyContent: 'flex-end',
         marginVertical: 5,
       }}>
-      <Text
-        style={{
-          fontFamily: 'Lato-Regular',
-          fontWeight: 'bold',
-          marginRight: 3,
-        }}>
-        Advanced Search
-      </Text>
+      <Text category="s2">Advanced Search</Text>
       <Switch
         trackColor={{false: '#767577', true: '#69Dd3E'}}
         thumbColor={advancedSearchToggle ? '#f4f3f4' : '#f4f3f4'}
@@ -132,40 +125,64 @@ export default function Home(props) {
         <View>
           {advancedSearchToggle ? (
             <View>
-              <View style={styles.RectangleShapeView}>
-                <Input
-                  placeholder="Product Name or Code"
-                  value={searchQuery}
-                  onChangeText={onChangeSearch}
-                  onSubmitEditing={handleSearchSubmit}
-                  onIconPress={handleSearchSubmit}
-                  style={styles.SearchProduct}
-                />
-                <View style={styles.Rectangle2}>
-                  <View style={styles.RadioButtonWrapper}>
-                    <RadioGroup
-                      style={{flexDirection: 'row'}}
-                      onChange={index => setValue(index)}
-                      selectedIndex={value}>
-                      <Radio>
-                        <View>
-                          <Text style={styles.text1}>Starts With</Text>
-                        </View>
-                      </Radio>
-                      <Radio>
-                        <View>
-                          <Text style={styles.text1}>Contains</Text>
-                        </View>
-                      </Radio>
-                    </RadioGroup>
-                  </View>
-                </View>
+              <Input
+                placeholder="Product Name or Code"
+                value={searchQuery}
+                onChangeText={onChangeSearch}
+                onSubmitEditing={handleSearchSubmit}
+                onIconPress={handleSearchSubmit}
+                style={styles.SearchProduct}
+              />
+              <View style={{alignItems: 'center', padding: 20}}>
+                <RadioGroup
+                  style={{
+                    flexDirection: 'row',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                    paddingHorizontal: '10%',
+                  }}
+                  onChange={index => setValue(index)}
+                  selectedIndex={value}>
+                  <Radio>
+                    <View style={{}}>
+                      <Text
+                        category="h6"
+                        style={{
+                          textAlign: 'center',
+                          textAlignVertical: 'center',
+                        }}>
+                        Starts With
+                      </Text>
+                    </View>
+                  </Radio>
+                  <Radio>
+                    <View>
+                      <Text category="h6">Contains</Text>
+                    </View>
+                  </Radio>
+                </RadioGroup>
               </View>
-              <TouchableOpacity
-                style={styles.searchContainer}
-                onPress={handleSearchSubmit}>
-                <Text style={styles.searchText}>SEARCH</Text>
-              </TouchableOpacity>
+              <View
+                style={{
+                  backgroundColor: '#fff',
+                  alignSelf: 'center',
+                  width: 'auto',
+                  padding: 20,
+                  borderRadius: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={handleSearchSubmit}
+                  style={{alignItems: 'center', justifyContent: 'center'}}>
+                  <Text
+                    category="h4"
+                    style={{textAlign: 'center', textAlignVertical: 'center'}}>
+                    SEARCH
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ) : (
             <View>
@@ -192,9 +209,9 @@ export default function Home(props) {
                         .toLowerCase()
                         .includes(productName.toLowerCase()),
                     )
-                    .map(el => (
+                    .map((el, index) => (
                       <TouchableOpacity
-                        key={el}
+                        key={`${el} ${index}`}
                         onPress={() => onSelect(el)}
                         style={styles.AutocompleteItem}>
                         <Text category="s1">{el}</Text>

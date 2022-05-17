@@ -67,7 +67,7 @@ function AuthProvider({children}) {
         setAuthData(_authData);
       }
     } catch (error) {
-      throw new Error(error.message, 'Auth.js');
+      throw new Error(error.response.data.message);
     }
   };
 

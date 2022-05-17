@@ -76,12 +76,18 @@ const TabNavigator = () => {
       initialRouteName={getAllProducts().length === 0 ? 'Settings' : 'home'}>
       <Tab.Screen
         options={{
-          headerTitle: () => <Text category="h6">Home</Text>,
+          headerTitle: () => <Text category="h5">Home</Text>,
         }}
         name="Home"
         component={Home}
       />
-      <Tab.Screen name="Scan" component={ScanScreen} />
+      <Tab.Screen
+        name="Scan"
+        options={{
+          headerTitle: () => <Text category="h5">Scan</Text>,
+        }}
+        component={ScanScreen}
+      />
       <Tab.Screen
         name="BrowseStackScreen"
         options={{headerShown: false}}
@@ -91,6 +97,7 @@ const TabNavigator = () => {
         name="Settings"
         component={Sync}
         options={{
+          headerTitle: () => <Text category="h5">Settings</Text>,
           headerRight: () => (
             <Button
               appearance={'ghost'}
@@ -107,7 +114,6 @@ const TabNavigator = () => {
 
 const AppStack = () => {
   const Stack = createNativeStackNavigator();
-
   return (
     <Stack.Navigator
       initialRouteName="Tabs"
@@ -127,7 +133,10 @@ const AppStack = () => {
       <Stack.Screen
         name="Cart"
         component={CartScreen}
-        options={{headerRight: () => null}}
+        options={{
+          headerRight: () => null,
+          headerTitle: () => <Text category={'s1'}>Cart</Text>,
+        }}
       />
     </Stack.Navigator>
   );

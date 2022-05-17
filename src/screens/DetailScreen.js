@@ -6,6 +6,7 @@ import {
   View,
   SafeAreaView,
   Image,
+  Dimensions,
   TouchableOpacity,
 } from 'react-native';
 import {getAllProducts} from '../database/realm';
@@ -19,6 +20,8 @@ import {LogBox} from 'react-native';
 
 import {Card, Icon, Modal, Text} from '@ui-kitten/components';
 import AddToCart from '../components/DetailScreen/AddToCart';
+import Orientation from '../components/common/Orientation';
+import defaultImage from '../assets/original_icon.png';
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
@@ -33,9 +36,18 @@ export const DetailScreen = () => {
   });
   let props = route.params;
 
+  const [orientation, setOrientation] = useState(
+    Orientation.isPortrait() ? 'portrait' : 'landscape',
+  );
   const [product, setProduct] = useState(
     getAllProducts().filtered('code==$0', props.code)[0],
   );
+
+  useEffect(() => {
+    Dimensions.addEventListener('change', () => {
+      setOrientation(Orientation.isPortrait() ? 'portrait' : 'landscape');
+    });
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({title: product.pname});
@@ -62,6 +74,7 @@ export const DetailScreen = () => {
           source={{uri: imageList[index]}}
           style={{height: '100%', width: '100%'}}
           resizeMode="contain"
+          defaultSource={defaultImage}
         />
       </View>
     );
@@ -84,50 +97,43 @@ export const DetailScreen = () => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <View style={{width: '100%', height: 350}}>
-        <RenderSwiper />
-      </View>
-      <View style={{paddingHorizontal: 10, paddingVertical: 10}}>
-        <Text style={[styles.text, {fontWeight: 'bold', fontSize: 30}]}>
-          {product.pname}
-        </Text>
-      </View>
-      <View style={{paddingHorizontal: 10, paddingVertical: 10}}>
-        <Text style={styles.text}>- Code: {product.code}</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-          }}>
-          <Text style={[styles.text, {paddingRight: 0}]}>- Stock: </Text>
-          <Text
-            style={[
-              styles.text,
-              product.stock < 5 ? {color: 'red'} : {color: 'green'},
-              {paddingHorizontal: 0},
-            ]}>
-            {product.stock}
-          </Text>
-        </View>
-        <Text style={styles.text}>- Dimension: {product.dimension}</Text>
-      </View>
-      <View style={[styles.divider, {marginTop: 10}]} />
       <View
         style={{
-          paddingHorizontal: 10,
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
+          flex: 1,
+          flexDirection: orientation === 'portrait' ? 'column' : 'row',
         }}>
-        <Text style={[styles.text, {fontSize: 24}]}>Price:</Text>
-        <Text
-          style={[
-            styles.text,
-            {fontSize: 24, fontWeight: 'bold', textAlignVertical: 'top'},
-          ]}>
-          Rs. {product.price}
-        </Text>
+        <View style={{width: '100%', flex: 1}}>
+          <RenderSwiper />
+        </View>
+        <View style={{paddingHorizontal: 10, paddingVertical: 10, flex: 1}}>
+          <Text category="h5">{product.pname}</Text>
+          <View style={{paddingHorizontal: 10, paddingVertical: 10}}>
+            <Text>- Code: {product.code}</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'flex-start',
+              }}>
+              <Text>- Stock: </Text>
+              <Text status={product.stock <= 5 ? 'danger' : 'success'}>
+                {product.stock}
+              </Text>
+            </View>
+            <Text>- Dimension: {product.dimension}</Text>
+          </View>
+          <View style={[styles.divider, {marginTop: 10}]} />
+          <View
+            style={{
+              paddingHorizontal: 10,
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+            }}>
+            <Text category={'h5'}>Price: </Text>
+            <Text category={'h5'}>Rs. {product.price}</Text>
+          </View>
+        </View>
       </View>
       <AddToCart product={product} setIsModalVisible={setIsModalVisible} />
       <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>

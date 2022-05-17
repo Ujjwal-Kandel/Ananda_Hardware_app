@@ -19,11 +19,10 @@ import {
 } from 'react-native-responsive-screen';
 import {NoSearchResults} from '../components/nosearchresults';
 import {ProductQuantityIcon} from './CompaniesScreen';
-import TextTicker from 'react-native-text-ticker';
 import {ListTypeSeparator} from './CompanyProductsScreen';
 
 const filter = (item, query) =>
-  item.toLowerCase().startsWith(query.toLowerCase());
+  item.toLowerCase().includes(query.toLowerCase());
 
 export const CompanyCategories = () => {
   const route = useRoute();
@@ -71,14 +70,7 @@ export const CompanyCategories = () => {
               }
               title={() => (
                 <View style={styles.cardTextContainer}>
-                  <TextTicker
-                    duration={4000}
-                    loop
-                    bounce
-                    repeatSpacer={50}
-                    marqueeDelay={1000}>
-                    {item}
-                  </TextTicker>
+                  <Text>{item}</Text>
                 </View>
               )}
               accessoryRight={() => {

@@ -29,6 +29,7 @@ function LoginScreen({navigation, route}) {
   useEffect(() => {
     return () => {
       setIsLoading(false);
+      setSignInData({});
     };
   }, []);
   // toggle secure text entry property
@@ -48,13 +49,12 @@ function LoginScreen({navigation, route}) {
     setIsLoading(true);
     try {
       await signIn(signInData);
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
       Alert.alert(
         'Login Failed',
-        error.message ? error.message : 'Please try again.',
+        error ? (error.message ? error.message : error) : 'Please try again.',
       );
     }
   };
@@ -73,13 +73,13 @@ function LoginScreen({navigation, route}) {
           <View style={styles.authForm}>
             <Input
               style={styles.inputField}
-              placeholder="email"
+              placeholder="Username"
               value={signInData.email}
               onChangeText={val => setSignInData({...signInData, email: val})}
             />
             <Input
               style={styles.inputField}
-              placeholder="password"
+              placeholder="Password"
               secureTextEntry={secureTextEntry}
               value={signInData.password}
               onChangeText={val =>

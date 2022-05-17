@@ -13,18 +13,24 @@ import store from './store/store';
 
 // Stack
 import Router from './routes/Router';
+import {AuthProvider} from './services/context/auth';
 
 export default function App() {
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-      <Provider store={store}>
-        <ApplicationProvider {...eva} theme={eva.light} customMapping={mapping}>
-          <SafeAreaProvider>
-            <Router />
-          </SafeAreaProvider>
-        </ApplicationProvider>
-      </Provider>
+      <AuthProvider>
+        <Provider store={store}>
+          <ApplicationProvider
+            {...eva}
+            theme={eva.light}
+            customMapping={mapping}>
+            <SafeAreaProvider>
+              <Router />
+            </SafeAreaProvider>
+          </ApplicationProvider>
+        </Provider>
+      </AuthProvider>
     </>
   );
 }

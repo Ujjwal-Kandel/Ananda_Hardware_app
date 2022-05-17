@@ -1,18 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View} from 'react-native';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 import {NavigationContainer} from '@react-navigation/native';
-import {AuthProvider, useAuth} from '../services/context/auth';
+import {useAuth} from '../services/context/auth';
+import axios from '../services/httpService';
 
 import RNBootSplash from 'react-native-bootsplash';
 import {Loading} from '../components/common/Loader';
 
 const RootStack = () => {
   const Stack = createNativeStackNavigator();
-  const {authData, loading} = useAuth();
+  const {authData, loading, signOut} = useAuth();
+
+  useEffect(() => {
+    const interceptorId = axios.interceptors.response.use(
+      response => response,
+      error => {
+        console.log({error});
+        if (error.response.status == 401) {
+          signOut();
+        }
+        return Promise.reject(error);
+      },
+    );
+    return () => {
+      axios.interceptors.response.eject(interceptorId);
+    };
+  }, []);
+
   if (loading) {
     return <Loading />;
   }
@@ -30,11 +48,9 @@ const RootStack = () => {
 
 const Router = () => {
   return (
-    <AuthProvider>
-      <NavigationContainer onReady={() => RNBootSplash.hide()}>
-        <RootStack />
-      </NavigationContainer>
-    </AuthProvider>
+    <NavigationContainer onReady={() => RNBootSplash.hide()}>
+      <RootStack />
+    </NavigationContainer>
   );
 };
 

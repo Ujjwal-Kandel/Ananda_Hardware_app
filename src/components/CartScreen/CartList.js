@@ -8,7 +8,7 @@ import {
 import React, {useEffect, useState} from 'react';
 
 import {Text, Icon, useTheme, Button, Modal, Card} from '@ui-kitten/components';
-import TextTicker from 'react-native-text-ticker';
+import MarqueeText from 'react-native-marquee';
 
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -32,7 +32,6 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
   const theme = useTheme();
   const cartItemsFromRedux = useSelector(state => selectCartItems(state));
 
-  console.log({cartItem});
   return (
     <View style={styles.rowFlexContainer}>
       <Image
@@ -51,15 +50,14 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-          <TextTicker
-            style={[styles.namecode]}
-            duration={4000}
-            loop
-            bounce
-            repeatSpacer={50}
-            marqueeDelay={1000}>
+          <MarqueeText
+            style={{color: '#000', fontFamily: 'Raleway-Regular'}}
+            marqueeOnStart={true}
+            delay={1000}
+            loop={true}
+            speed={1}>
             {cartItem.product.pname}
-          </TextTicker>
+          </MarqueeText>
           <View>
             <Text category="label">Rs {cartItem.product.price}</Text>
           </View>
@@ -74,7 +72,10 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
           }}>
           <View style={styles.orderSizeContainer}>
             <TouchableOpacity
-              style={styles.quantityModifierButton}
+              style={[
+                styles.elementContainer,
+                {backgroundColor: theme['color-basic-200']},
+              ]}
               onPress={() => {
                 handleChange('decrement', cartItem.product.id);
               }}>
@@ -84,13 +85,13 @@ const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
                 fill="#333"
               />
             </TouchableOpacity>
-            <Text category="h6" style={{}}>
-              {cartItem.quantity}
-            </Text>
+            <View style={styles.elementContainer}>
+              <Text category="s1">{cartItem.quantity}</Text>
+            </View>
             <TouchableOpacity
               disabled={isIncrementorDisabled}
               style={[
-                styles.quantityModifierButton,
+                styles.elementContainer,
                 {
                   backgroundColor: isIncrementorDisabled
                     ? theme['color-danger-300']
@@ -299,11 +300,21 @@ const styles = StyleSheet.create({
   },
   orderSizeContainer: {
     flexDirection: 'row',
+    height: 45,
+    width: '20%',
+    minWidth: '145',
     alignItems: 'center',
-    width: 125,
     justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#ddd',
+    marginRight: '5%',
+    borderWidth: 0.75,
+    borderColor: '#ccc',
+    borderRadius: 2,
+  },
+  elementContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
   },
   productImage: {
     height: 130,
@@ -324,8 +335,6 @@ const styles = StyleSheet.create({
   },
   quantityModifierButton: {
     height: '100%',
-    paddingVertical: 2,
-    paddingHorizontal: 8,
   },
   resetButtonContainer: theme => ({
     backgroundColor: theme['color-basic-100'],

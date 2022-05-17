@@ -1,7 +1,8 @@
 import axios from 'axios';
+import {AuthProvider} from './context/auth';
 
 const instance = axios.create({
-  baseURL: 'http://192.168.1.117:8000',
+  baseURL: 'http://192.168.1.88:8000',
 });
 
 export const setAuthToken = token => {

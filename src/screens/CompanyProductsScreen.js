@@ -1,13 +1,20 @@
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
-import {Input, Divider, TabView, Tab} from '@ui-kitten/components';
+import {
+  Input,
+  Divider,
+  TabView,
+  Tab,
+  useTheme,
+  Text,
+} from '@ui-kitten/components';
 import {
   useNavigation,
   useRoute,
   useFocusEffect,
   useNavigationState,
 } from '@react-navigation/native';
-import TextTicker from 'react-native-text-ticker';
+import TextMarquee from 'react-native-marquee';
 
 import {capitalize} from 'lodash';
 import {LogBox} from 'react-native';
@@ -31,6 +38,7 @@ export function ListTypeSeparator() {
 export const Products = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  const theme = useTheme();
   const previousRoute = useNavigationState(state => state.routes);
 
   const props = route.params;
@@ -73,15 +81,14 @@ export const Products = () => {
   const HeaderTitle = useCallback(
     () => (
       <View style={{marginRight: 100}}>
-        <TextTicker
-          style={styles.headerTextTickerStyle}
-          duration={4000}
-          loop
-          bounce
-          repeatSpacer={50}
-          marqueeDelay={1000}>
+        <TextMarquee
+          style={{color: '#000', fontFamily: 'Raleway-Regular'}}
+          loop={true}
+          speed={1}
+          delay={1000}
+          marqueeOnStart={true}>
           {`${companyName} - ${capitalize(category)}`}
-        </TextTicker>
+        </TextMarquee>
       </View>
     ),
     [companyName, category],
@@ -129,11 +136,17 @@ export const Products = () => {
         <NoSearchResults />
       ) : (
         <TabView
+          indicatorStyle={{backgroundColor: theme['color-primary-300']}}
           style={{flex: 1}}
           selectedIndex={selectedIndex}
           shouldLoadComponent={shouldLoadComponent}
           onSelect={index => setSelectedIndex(index)}>
-          <Tab title="Grid">
+          <Tab
+            title={() => (
+              <Text status="primary" appearance="hint">
+                Grid
+              </Text>
+            )}>
             <FlatList
               numColumns={2}
               data={data}
@@ -150,7 +163,12 @@ export const Products = () => {
               )}
             />
           </Tab>
-          <Tab title="List">
+          <Tab
+            title={() => (
+              <Text status="primary" appearance="hint">
+                List
+              </Text>
+            )}>
             <FlatList
               data={data}
               keyExtractor={(item, index) => index.toString()}
@@ -175,10 +193,3 @@ export const Products = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  headerTextTickerStyle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});

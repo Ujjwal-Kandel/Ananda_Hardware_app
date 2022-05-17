@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Card, Text} from '@ui-kitten/components';
-import TextTicker from 'react-native-text-ticker';
 
 import {capitalize} from 'lodash';
 import {ProductQuantityIcon} from '../../screens/CompaniesScreen';

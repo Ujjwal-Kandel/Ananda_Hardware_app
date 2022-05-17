@@ -4,7 +4,14 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Modal, Spinner, Card, Icon, Text} from '@ui-kitten/components';
+import {
+  Modal,
+  Spinner,
+  Card,
+  Icon,
+  Text,
+  useTheme,
+} from '@ui-kitten/components';
 
 import {SyncStatus} from '../components/syncStatus';
 
@@ -22,6 +29,7 @@ export default function Sync() {
   const [isLoading, setIsLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
+  const theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -38,6 +46,7 @@ export default function Sync() {
         color: '#69DD3B',
       });
     } catch (err) {
+      console.log({err});
       setSyncStatus({
         title: 'Sync failed!',
         msg: 'Check your internet connection and try again.',
@@ -72,20 +81,26 @@ export default function Sync() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.primaryRectangleContainer}>
-        <Text category={'h2'} style={[styles.syncText]}>
+        <Text
+          category={'h4'}
+          style={{
+            textTransform: 'capitalize',
+            textAlign: 'center',
+            textAlignVertical: 'center',
+          }}>
           Sync the app to load products
         </Text>
         <TouchableOpacity
           onPress={handleSyncPress}
           style={styles.buttonContainer}>
-          <View style={styles.syncButtonContent}>
-            <Text category={'h4'}>Sync</Text>
-            <Icon
-              name="sync-outline"
-              fill="#252525"
-              style={styles.iconStyles}
-            />
-          </View>
+          <Text category={'h5'} style={styles.syncText}>
+            Sync
+          </Text>
+          <Icon
+            name="sync-outline"
+            style={styles.iconStyles}
+            fill={theme['color-success-400']}
+          />
         </TouchableOpacity>
         <Modal
           visible={visible}
@@ -128,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  iconStyles: {height: 32, width: 32, marginLeft: 5},
+  iconStyles: {height: 32, width: 32},
   logoutButtonWrapper: {
     alignItems: 'center',
     position: 'absolute',
@@ -157,33 +172,35 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   buttonContainer: {
-    paddingHorizontal: 15,
-    paddingVertical: 5,
     backgroundColor: '#fff',
-    borderRadius: 20,
+    padding: 20,
+    borderRadius: 100,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignSelf: 'center',
     marginTop: 50,
+    flexDirection: 'row',
   },
-
-  syncButtonContent: {flexDirection: 'row', alignItems: 'center'},
   modalMsgContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   primaryRectangleContainer: {
+    backgroundColor: '#F5E5DA',
     width: wp('93%'),
     height: hp('50%'),
-    margin: 15,
     marginTop: 120,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   syncText: {
     textAlign: 'center',
+    textAlignVertical: 'center',
+    textTransform: 'uppercase',
+    marginRight: 10,
   },
   fetchingText: {fontSize: 24, marginBottom: 10},
 });

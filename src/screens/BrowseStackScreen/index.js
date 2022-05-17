@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {useTheme} from '@ui-kitten/components';
+import {Text, useTheme} from '@ui-kitten/components';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Browse from '../CompaniesScreen';
@@ -22,9 +22,27 @@ function BrowseStackScreen() {
           </>
         ),
       }}>
-      <BrowseStack.Screen component={Browse} name="Browse Companies" />
-      <BrowseStack.Screen component={CompanyCategories} name="Categories" />
-      <BrowseStack.Screen component={Products} name="Products" />
+      <BrowseStack.Screen
+        component={Browse}
+        options={{
+          headerTitle: () => <Text category="h5">Browse Companies</Text>,
+        }}
+        name="Browse Companies"
+      />
+      <BrowseStack.Screen
+        component={CompanyCategories}
+        name="Categories"
+        options={{
+          headerTitle: () => <Text category="h5">Categories</Text>,
+        }}
+      />
+      <BrowseStack.Screen
+        component={Products}
+        name="Products"
+        options={{
+          headerTitle: () => <Text category="h5">Products</Text>,
+        }}
+      />
     </BrowseStack.Navigator>
   );
 }

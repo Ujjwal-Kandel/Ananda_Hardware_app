@@ -17,7 +17,7 @@ function AuthStack() {
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{headerTitle: () => <Text category="h4">Login</Text>}}
+        options={{headerTitle: () => <Text category="h6">Login</Text>}}
       />
     </Stack.Navigator>
   );

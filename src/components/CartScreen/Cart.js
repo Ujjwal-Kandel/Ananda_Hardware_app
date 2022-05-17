@@ -35,18 +35,17 @@ const Cart = () => {
       <View
         style={{
           backgroundColor: theme['color-basic-500'],
-          paddingHorizontal: 5,
           borderRadius: 50,
           position: 'absolute',
           right: -10,
-          top: -5,
-          justifyContent: 'flex-start',
+          top: -10,
+          justifyContent: 'center',
           alignItems: 'center',
-          minWidth: 15,
-          aspectRatio: 1,
+          width: '80%',
+          height: '80%',
           zIndex: 1000,
         }}>
-        <Text>{cartCount}</Text>
+        <Text category="p1">{cartCount}</Text>
       </View>
     </TouchableOpacity>
   );

@@ -5,7 +5,6 @@ import {StyleSheet, View, SafeAreaView, Text, FlatList} from 'react-native';
 import {Card} from '@ui-kitten/components';
 import {getAllProducts} from '../database/realm';
 import {useNavigation} from '@react-navigation/native';
-import TextTicker from 'react-native-text-ticker';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -51,15 +50,6 @@ export default function ResultComponent({route}) {
                     })
                   }
                   status={item.stock <= 5 ? 'danger' : 'success'}>
-                  <TextTicker
-                    style={([styles.namecode], {fontSize: 20})}
-                    duration={4000}
-                    loop
-                    bounce
-                    repeatSpacer={50}
-                    marqueeDelay={1000}>
-                    {item.pname}
-                  </TextTicker>
                   <View style={{padding: 13}} />
                   <Text style={styles.namecode}>"{item.category}"</Text>
                   <Text style={styles.price}> Rs: {item.price} </Text>
