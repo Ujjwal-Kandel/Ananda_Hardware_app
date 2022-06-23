@@ -1,14 +1,7 @@
 // SHOWS THE RESULT FROM SEARCH
 
 import React, {useEffect, useState, useRef} from 'react';
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, SafeAreaView, Image, Dimensions} from 'react-native';
 import {getAllProducts} from '../database/realm';
 import {
   useNavigation,

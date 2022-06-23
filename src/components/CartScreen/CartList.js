@@ -7,9 +7,15 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 
-import {Text, Icon, useTheme, Button, Modal, Card} from '@ui-kitten/components';
-import MarqueeText from 'react-native-marquee';
-
+import {
+  Text,
+  Icon,
+  useTheme,
+  Button,
+  Modal,
+  Card,
+  Spinner,
+} from '@ui-kitten/components';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {
@@ -17,116 +23,15 @@ import {
   incrementQuantity,
   decrementQuantity,
   removeFromCart,
-  resetCart,
   placeOrder,
-  resetPlaceOrderState,
   selectPlaceOrderStatus,
   setPlaceOrderStatus,
+  getPurchaseHistory,
 } from '../../slices/cartSlice';
 import {useNavigation} from '@react-navigation/core';
 import {useCallback} from 'react';
 
-const CartItem = ({cartItem, handleChange, setIsModalVisible}) => {
-  const itemCount = cartItem.quantity;
-  const isIncrementorDisabled = itemCount > cartItem.product.stock - 1;
-  const theme = useTheme();
-  const cartItemsFromRedux = useSelector(state => selectCartItems(state));
-
-  return (
-    <View style={styles.rowFlexContainer}>
-      <Image
-        source={{
-          uri: cartItem.product.image[0],
-        }}
-        style={styles.productImage}
-        resizeMode="contain"
-      />
-      <View style={{flex: 1}}>
-        <View
-          style={{
-            flex: 2,
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <MarqueeText
-            style={{color: '#000', fontFamily: 'Raleway-Regular'}}
-            marqueeOnStart={true}
-            delay={1000}
-            loop={true}
-            speed={1}>
-            {cartItem.product.pname}
-          </MarqueeText>
-          <View>
-            <Text category="label">Rs {cartItem.product.price}</Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flex: 3,
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={styles.orderSizeContainer}>
-            <TouchableOpacity
-              style={[
-                styles.elementContainer,
-                {backgroundColor: theme['color-basic-200']},
-              ]}
-              onPress={() => {
-                handleChange('decrement', cartItem.product.id);
-              }}>
-              <Icon
-                name="minus-outline"
-                style={{width: 20, height: 20}}
-                fill="#333"
-              />
-            </TouchableOpacity>
-            <View style={styles.elementContainer}>
-              <Text category="s1">{cartItem.quantity}</Text>
-            </View>
-            <TouchableOpacity
-              disabled={isIncrementorDisabled}
-              style={[
-                styles.elementContainer,
-                {
-                  backgroundColor: isIncrementorDisabled
-                    ? theme['color-danger-300']
-                    : theme['color-basic-200'],
-                },
-              ]}
-              onPress={() => {
-                handleChange('increment', cartItem.product.id);
-              }}>
-              <Icon
-                name="plus-outline"
-                style={{width: 20, height: 20}}
-                fill="#333"
-              />
-            </TouchableOpacity>
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                if (cartItemsFromRedux.length > 1) {
-                  setIsModalVisible(true);
-                  setTimeout(() => {
-                    setIsModalVisible(false);
-                  }, 1000);
-                }
-                handleChange('remove', cartItem.product.id);
-              }}>
-              <Text status="danger">Remove</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
+import CartItem from './CartItem';
 
 const CartList = () => {
   const dispatch = useDispatch();
@@ -188,13 +93,21 @@ const CartList = () => {
   );
 
   const placeOrderStatus = useSelector(selectPlaceOrderStatus);
-  console.log({placeOrderStatus});
   const handlePlaceOrder = () => {
     dispatch(placeOrder());
   };
   useEffect(() => {
+    if (placeOrderStatus === 'loading') {
+      setIsModalVisible(true);
+    }
     if (placeOrderStatus === 'success') {
-      setModalTextContent('Ordered Successfully');
+      setIsModalVisible(true);
+      setTimeout(() => {
+        setIsModalVisible(false);
+        dispatch(setPlaceOrderStatus({status: 'idle'}));
+        dispatch(getPurchaseHistory());
+      }, 1500);
+    } else if (placeOrderStatus === 'rejected') {
       setIsModalVisible(true);
       setTimeout(() => {
         setIsModalVisible(false);
@@ -262,22 +175,50 @@ const CartList = () => {
       <NotificationModal
         isModalVisible={isModalVisible}
         modalTextContent={modalTextContent}
+        placeOrderStatus={placeOrderStatus}
       />
     </View>
   );
 };
 
-const NotificationModal = ({isModalVisible, modalTextContent}) => {
+const NotificationModal = ({
+  isModalVisible,
+  modalTextContent,
+  placeOrderStatus,
+}) => {
   return (
     <Modal visible={isModalVisible} backdropStyle={styles.backdrop}>
       <Card>
-        <View style={{alignItems: 'center'}}>
+        {/* <View style={{alignItems: 'center'}}>
           <Text category="h5">{modalTextContent}</Text>
           <Icon
             name={'checkmark-circle-outline'}
             style={styles.iconStyles}
             fill={'green'}
           />
+        </View> */}
+        <View style={{alignItems: 'center'}}>
+          {placeOrderStatus === 'loading' ? (
+            <Spinner />
+          ) : placeOrderStatus === 'success' ? (
+            <>
+              <Text category={'h5'}>Ordered successfully</Text>
+              <Icon
+                name={'checkmark-circle-outline'}
+                style={styles.iconStyles}
+                fill="green"
+              />
+            </>
+          ) : (
+            <>
+              <Text category={'h5'}>Failed to place order</Text>
+              <Icon
+                name={'close-circle-outline'}
+                style={styles.iconStyles}
+                fill="red"
+              />
+            </>
+          )}
         </View>
       </Card>
     </Modal>
@@ -302,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 45,
     width: '20%',
-    minWidth: '145',
+    minWidth: 145,
     alignItems: 'center',
     justifyContent: 'space-between',
     marginRight: '5%',

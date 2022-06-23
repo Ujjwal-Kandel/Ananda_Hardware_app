@@ -1,5 +1,5 @@
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {Icon, Text, Button, useTheme} from '@ui-kitten/components';
 

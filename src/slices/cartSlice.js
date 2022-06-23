@@ -4,13 +4,14 @@ import axios from '../services/httpService';
 
 export const placeOrder = createAsyncThunk(
   '/cart/placeOrder',
-  async (args, {getState}) => {
+  async (args, {getState, rejectWithValue}) => {
     try {
       const {cartItems} = getState().cart;
       const payload = cartItems.map(item => ({
         id: item.product.id,
         quantity: item.quantity,
       }));
+      console.log({payload});
       const {data} = await axios.post('/api/deduct-stock', {
         data: {
           products: payload,
@@ -21,17 +22,32 @@ export const placeOrder = createAsyncThunk(
         return;
       }
     } catch (error) {
-      console.log(error);
-      return error;
+      if (error && error.message) {
+        return rejectWithValue(error.message);
+      }
+    }
+  },
+);
+
+export const getPurchaseHistory = createAsyncThunk(
+  '/cart/getPurchaseHistory',
+  async (args, {getState, rejectWithValue}) => {
+    try {
+      const {data} = await axios.get('/api/purchase-history');
+      return data.data.orders;
+    } catch (error) {
+      return rejectWithValue(error);
     }
   },
 );
 
 const initialState = {
   cartItems: [],
+  orders: [],
   status: 'idle',
   error: null,
   placeOrderStatus: 'idle',
+  fetchOrdersStatus: 'idle',
 };
 
 const getProductIndex = (state, idToFind) => {
@@ -56,6 +72,9 @@ export const cartSlice = createSlice({
     },
     setPlaceOrderStatus: (state, action) => {
       state.placeOrderStatus = action.payload.status;
+    },
+    setFetchOrderStatus: (state, action) => {
+      state.fetchOrdersStatus = action.payload.status;
     },
     removeFromCart: (state, action) => {
       state.cartItems = state.cartItems.filter(
@@ -83,14 +102,14 @@ export const cartSlice = createSlice({
     resetCart: (state, action) => {
       return initialState;
     },
-    resetPlaceOrderState: (state, action) => {
+    resetPlaceOrderStatus: (state, action) => {
       state.placeOrderStatus = 'idle';
     },
   },
   extraReducers(builder) {
     builder
       .addCase(placeOrder.pending, (state, action) => {
-        state.status = 'loading';
+        state.placeOrderStatus = 'loading';
       })
       .addCase(placeOrder.fulfilled, (state, action) => {
         const cartItems = state.cartItems.map(cartItem => ({
@@ -102,7 +121,17 @@ export const cartSlice = createSlice({
         state.placeOrderStatus = 'success';
       })
       .addCase(placeOrder.rejected, (state, action) => {
-        console.log('rejected');
+        state.placeOrderStatus = 'rejected';
+      })
+      .addCase(getPurchaseHistory.pending, (state, action) => {
+        state.fetchOrdersStatus = 'loading';
+      })
+      .addCase(getPurchaseHistory.fulfilled, (state, action) => {
+        state.orders = action.payload;
+        state.fetchOrdersStatus = 'success';
+      })
+      .addCase(getPurchaseHistory.rejected, (state, action) => {
+        state.fetchOrdersStatus = 'rejected';
       });
   },
 });
@@ -145,4 +174,5 @@ export const {
   resetCart,
   resetPlaceOrderState,
   setPlaceOrderStatus,
+  setFetchOrderStatus,
 } = cartSlice.actions;

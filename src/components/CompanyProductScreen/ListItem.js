@@ -20,9 +20,10 @@ const ListItem = ({item, isResultPage, onPress}) => {
             <Text>{capitalize(item.pname)}</Text>
             <View style={styles.spacer} />
 
-            {isResultPage ? (
-              <Text category="p1">{capitalize(item.category)}</Text>
-            ) : null}
+            <Text category="p1" numberOfLines={1}>
+              {capitalize(item.code)}
+            </Text>
+
             <View style={styles.spacer} />
             <Text category="p1"> Rs: {item.price} </Text>
           </View>

@@ -1,7 +1,7 @@
 import Realm from 'realm';
 import axios from '../services/httpService';
 
-class Company {}
+class Company extends Realm.Object {}
 Company.schema = {
   name: 'Company',
   properties: {
@@ -10,7 +10,7 @@ Company.schema = {
   },
 };
 
-class Product {}
+class Product extends Realm.Object {}
 Product.schema = {
   name: 'Product',
   properties: {
@@ -46,9 +46,6 @@ let getPname = (cname = '', category = '') => {
       .map(x => x.pname);
   }
   return mappedData;
-  const respData = new Set(mappedData);
-  const Pnames = Array.from(respData);
-  return Pnames;
 };
 
 let getAllCompany = () => {

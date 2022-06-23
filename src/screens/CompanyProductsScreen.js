@@ -101,8 +101,10 @@ export const Products = () => {
     isMounted.current.mounted = true;
     if (isMounted.current.mounted) {
       if (searchProduct) {
-        let filteredData = CompanyProducts().filter(item =>
-          filter(item.pname, searchProduct),
+        let filteredData = CompanyProducts().filter(
+          item =>
+            filter(item.pname, searchProduct) ||
+            filter(item.code, searchProduct),
         );
         setData(filteredData);
       } else {
@@ -116,7 +118,6 @@ export const Products = () => {
 
   const onChangeText = query => {
     setSearchProduct(query);
-    setData(CompanyProducts().filter(item => filter(item.pname, query)));
   };
 
   const [selectedIndex, setSelectedIndex] = useState(0);

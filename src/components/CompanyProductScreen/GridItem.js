@@ -59,7 +59,7 @@ function GridItem({item, onPress}) {
           <Text category={'c1'} adjustsFontSizeToFit>
             Rs: {item.price}
           </Text>
-          <Text category={'c1'} adjustsFontSizeToFit>
+          <Text category={'c1'} numberOfLines={1} adjustsFontSizeToFit>
             Code: {item.code}
           </Text>
         </View>

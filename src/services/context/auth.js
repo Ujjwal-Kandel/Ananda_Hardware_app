@@ -67,7 +67,7 @@ function AuthProvider({children}) {
         setAuthData(_authData);
       }
     } catch (error) {
-      console.log({error});
+      console.log(JSON.stringify(error), 'errorrrrrrr');
       if (error.response && error.response.message) {
         throw new Error(error.response.data.message);
       }

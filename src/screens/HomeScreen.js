@@ -6,6 +6,7 @@ import {
   Switch,
   ScrollView,
   KeyboardAvoidingView,
+  FlatList,
   TouchableOpacity,
 } from 'react-native';
 import {Icon, Text, Input, Radio, RadioGroup} from '@ui-kitten/components';
@@ -16,16 +17,24 @@ import {
 } from 'react-native-responsive-screen';
 import {useNavigation} from '@react-navigation/core';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import Orders, {itemSeparator} from '../components/HomeScreen/Orders';
+import {useDispatch} from 'react-redux';
+import {getPurchaseHistory} from '../slices/cartSlice';
+import ListItem from '../components/CompanyProductScreen/ListItem';
 
 const filter = (item, query) =>
   item.toLowerCase().includes(query.toLowerCase());
 
-const DATA = getPname();
+const DATA = getAllProducts();
 export default function Home(props) {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    dispatch(getPurchaseHistory());
+  }, []);
   //for search
   const [searchQuery, setSearchQuery] = useState(null);
-  const [data, setData] = useState(getPname());
-  const navigation = useNavigation();
   const [advancedSearchToggle, setAdvancedSearchToggle] = useState(false);
 
   // for product autocomplete search
@@ -34,7 +43,7 @@ export default function Home(props) {
   const [productName, setProductName] = useState('');
 
   useEffect(() => {
-    setFilteredData(getPname());
+    setFilteredData(getAllProducts());
   }, []);
 
   const productSearchRef = useRef();
@@ -42,24 +51,9 @@ export default function Home(props) {
     setAdvancedSearchToggle(isChecked);
   };
 
-  const onSelect = name => {
-    let code = getAllProducts()
-      .filtered('pname==$0', name)
-      .map(x => x.code)[0];
-
-    navigation.navigate('Details', {code: code});
-    setSearchQuery();
-    setData(getPname());
-  };
-
   const onChangeSearch = query => {
+    setShowAutoComplete(true);
     setSearchQuery(query);
-    setData(getPname().filter(item => filter(item, query)));
-  };
-
-  const clearInput = () => {
-    setSearchQuery();
-    setData(getPname());
   };
 
   //for radiobutton to select search type:
@@ -69,25 +63,27 @@ export default function Home(props) {
     if (searchQuery) {
       props.navigation.push('Result', {searchQuery, value});
       setSearchQuery('');
-      setData(getPname());
     }
   };
+
+  const keyExtractor = (item, index) => index.toString();
+  const renderItem = ({item, index}) => (
+    <ListItem
+      item={item}
+      onPress={() =>
+        navigation.navigate('Details', {
+          code: item.code,
+        })
+      }
+    />
+  );
 
   const ClearSearchButton = () => {
     return (
       <Pressable
         onPress={() => {
           setShowAutoComplete(false);
-
-          if (productName !== '') {
-            productSearchRef?.current.focus();
-            setShowAutoComplete(true);
-          } else {
-            if (productSearchRef.current) {
-              productSearchRef.current.blur();
-              // productSearchRef.current.focus();
-            }
-          }
+          productSearchRef?.current.blur();
           setProductName('');
         }}>
         <Icon
@@ -119,10 +115,10 @@ export default function Home(props) {
   );
 
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView>
+    <SafeAreaView style={{flex: 1}}>
+      <KeyboardAvoidingView style={{flex: 1}}>
         <SearchToggle />
-        <View>
+        <View style={{flex: 1}}>
           {advancedSearchToggle ? (
             <View>
               <Input
@@ -185,39 +181,47 @@ export default function Home(props) {
               </View>
             </View>
           ) : (
-            <View>
+            <View style={{paddingHorizontal: 10, flex: 1}}>
               <Input
                 placeholder="Product Name"
                 style={styles.SearchProduct}
-                onFocus={() => setShowAutoComplete(true)}
+                onFocus={() => {
+                  // setShowAutoComplete(true);
+                }}
                 ref={productSearchRef}
                 onBlur={() => {
-                  setTimeout(() => setShowAutoComplete(false), 1000);
+                  // setTimeout(() => setShowAutoComplete(false), 1000);
                 }}
                 onChangeText={val => {
+                  if (val !== '') {
+                    setShowAutoComplete(true);
+                  } else {
+                    setShowAutoComplete(false);
+                  }
                   setProductName(val);
                 }}
                 accessoryRight={<ClearSearchButton />}
                 value={productName}
               />
+              {!showAutoComplete && <Orders />}
 
               {filteredData && showAutoComplete ? (
-                <ScrollView style={styles.AutocompleteArea}>
-                  {filteredData
-                    .filter(el =>
-                      String(el)
+                <FlatList
+                  data={filteredData.filter(
+                    el =>
+                      String(el.pname)
+                        .toLowerCase()
+                        .includes(productName.toLowerCase()) ||
+                      String(el.code)
                         .toLowerCase()
                         .includes(productName.toLowerCase()),
-                    )
-                    .map((el, index) => (
-                      <TouchableOpacity
-                        key={`${el} ${index}`}
-                        onPress={() => onSelect(el)}
-                        style={styles.AutocompleteItem}>
-                        <Text category="s1">{el}</Text>
-                      </TouchableOpacity>
-                    ))}
-                </ScrollView>
+                  )}
+                  ItemSeparatorComponent={itemSeparator}
+                  ListHeaderComponent={itemSeparator}
+                  ListFooterComponent={itemSeparator}
+                  renderItem={renderItem}
+                  keyExtractor={keyExtractor}
+                />
               ) : null}
             </View>
           )}
@@ -230,7 +234,6 @@ const styles = StyleSheet.create({
   Dividor: {paddingHorizontal: 18},
   SearchProduct: {
     borderRadius: 15,
-    paddingHorizontal: 10,
   },
   RadioButtonWrapper: {
     flexDirection: 'row',
@@ -249,7 +252,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   AutocompleteArea: {
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
     marginTop: 5,
   },
